@@ -1,0 +1,1 @@
+# investment-parody-token
