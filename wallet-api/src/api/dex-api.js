@@ -28,7 +28,7 @@ export async function getTokenInfo(contractAddress) {
       };
     }
   } catch (error) {
-    const msg = `Erro ao obter token ${contractAddress}: ${error.message}`;
+    const msg = `Erro interno no servidor`;
     return {
       success: false,
       error: msg
