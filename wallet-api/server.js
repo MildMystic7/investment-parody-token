@@ -1,10 +1,19 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import app from './src/app.js';
+import { ENV, PORT, HOST } from './config.js';
 
-const PORT = process.env.PORT || 3000;
+const emojiMap = {
+  dev: '🛠️  [DEV]',
+  teste: '🧪  [TESTE]',
+  prod: '🚀  [PROD]',
+};
+
+
 
 app.listen(PORT, () => {
-  console.log(`Servidor a correr em http://localhost:${PORT}`);
+  console.log('----------------------------------------------------------------------------');
+  console.log(`${emojiMap[ENV] || '❓  [UNKNOWN]'} Ambiente a correr\n`);
+  console.log(`HOST : ${HOST}`);
+  console.log(`PORT : ${PORT}`);
+  console.log(`URL  : http://${HOST}:${PORT}`);
+  console.log('----------------------------------------------------------------------------\n');
 });
