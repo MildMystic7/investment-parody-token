@@ -26,11 +26,11 @@ async function main() {
   };
 
   const filePath = path.join(folderPath, `${publicKey}.json`);
-  fs.writeFileSync(filePath, JSON.stringify(walletData, null, 2));
+  fs.writeFileSync(filePath, JSON.stringify(walletData, null, 100));
   console.log(`📁 Wallet guardada em: ${filePath}`);
 
   // Airdrop de 2 SOL
-  console.log('\n🚀 A pedir airdrop de 2 SOL...');
+  console.log('\n🚀 A pedir airdrop de 100 SOL...');
   const sig = await connection.requestAirdrop(wallet.publicKey, 2 * LAMPORTS_PER_SOL);
   await connection.confirmTransaction(sig, 'confirmed');
 

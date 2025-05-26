@@ -12,7 +12,7 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Wallet
+ *   name: Crypto
  *   description: Endpoints relacionados a wallets Solana
  */
 

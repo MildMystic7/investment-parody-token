@@ -7,7 +7,7 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Token
+ *   name: Crypto
  *   description: Endpoints para informação de tokens
  */
 
