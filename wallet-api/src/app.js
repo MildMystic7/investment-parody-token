@@ -2,6 +2,7 @@ import express from 'express';
 import logger from './utils/logger.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './swagger.js';
+import cors from 'cors';
 
 // routes
 import tokenRoutes from './routes/tokenRoutes.js';
@@ -10,6 +11,7 @@ import voteRoutes from './routes/voteRoutes.js';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {

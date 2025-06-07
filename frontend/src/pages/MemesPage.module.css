@@ -1,0 +1,432 @@
+.container {
+  padding: 32px;
+  background: #1a1a1a;
+  color: white;
+  font-family: var(--font-primary);
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 12px 0;
+}
+
+.subtitle {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Dashboard Boxes */
+.dashboardBoxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.dashboardBox {
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #404040;
+  min-height: 200px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.boxHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.boxTitle {
+  font-family: var(--font-primary);
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.boxIcons {
+  display: flex;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.timeFilters {
+  display: flex;
+  gap: 8px;
+}
+
+.timeFilter {
+  background: transparent;
+  border: 1px solid #404040;
+  color: #9ca3af;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.timeFilter.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.timeFilter:hover {
+  border-color: #525252;
+}
+
+/* Dashboard Box Content */
+.boxContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Most Visited Box - Compact Layout */
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  gap: 12px;
+}
+
+.tokenInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rank {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #9ca3af;
+  min-width: 16px;
+  margin-left: 10px;
+}
+
+.tokenIcon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.tokenName {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.priceInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  min-width: 80px;
+}
+
+.price {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: white;
+  font-weight: 600;
+}
+
+.change {
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.positive {
+  color: #10b981;
+}
+
+.negative {
+  color: #ef4444;
+}
+
+/* Top Gainers Box */
+.chartPlaceholder {
+  display: flex;
+  gap: 16px;
+  height: 120px;
+}
+
+.chartLines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.chartLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tokenDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.tokenLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: white;
+  min-width: 50px;
+}
+
+.tokenGain {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #10b981;
+  font-weight: 500;
+}
+
+.chartArea {
+  flex: 1;
+  position: relative;
+}
+
+.chartSvg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Market Cap Box */
+.marketCapInfo {
+  margin-bottom: 16px;
+}
+
+.marketCapMain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.marketCapLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #10b981;
+}
+
+.marketCapValue {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+}
+
+.volumeInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.volumeLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.volumeValue {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+/* Table */
+.tableContainer {
+  background: #2a2a2a;
+  border-radius: 12px;
+  border: 1px solid #404040;
+  overflow: hidden;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px 150px 150px 120px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #404040;
+  padding: 16px 0;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px 150px 150px 120px;
+  border-bottom: 1px solid #404040;
+  padding: 16px 0;
+  transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableCell {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  color: white;
+}
+
+.tableHeader .tableCell {
+  font-weight: 600;
+  color: #9ca3af;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+/* Table specific elements */
+.star {
+  margin-right: 8px;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+}
+
+.star:hover {
+  opacity: 1;
+}
+
+.coinInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.coinIcon {
+  font-size: 24px;
+}
+
+.coinDetails {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.coinName {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.coinSymbol {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.buyButton {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.buyButton:hover {
+  background: #2563eb;
+}
+
+.marketCap,
+.volume,
+.supply {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  color: white;
+}
+
+.miniChart {
+  width: 60px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.miniChartSvg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .dashboardBoxes {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 60px 180px 100px 70px 70px 70px 130px 130px 130px 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .tableCell {
+    padding: 8px 12px;
+    border-bottom: 1px solid #404040;
+  }
+
+  .tableHeader .tableCell {
+    display: none;
+  }
+
+  .tableRow .tableCell:before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #9ca3af;
+    margin-right: 8px;
+    min-width: 100px;
+  }
+}
