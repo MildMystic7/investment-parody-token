@@ -90,11 +90,36 @@ function Navbar() {
             >
               Council
             </Link>
+            <Link
+              to="/oakcoin"
+              className={`${styles.navLink} ${
+                isActive("/oakcoin") ? styles.active : ""
+              }`}
+            >
+              OakCoin
+            </Link>
           </div>
         </div>
 
         {/* Right Section - User Dropdown */}
         <div className={styles.rightSection}>
+          <a
+            href="https://twitter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.socialLink}
+          >
+            Twitter
+          </a>
+          <a
+            href="https://telegram.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.socialLink}
+          >
+            Telegram
+          </a>
+
           <div className={styles.userDropdown} ref={dropdownRef}>
             <button className={styles.userButton} onClick={toggleDropdown}>
               <span className={styles.userName}>

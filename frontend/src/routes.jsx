@@ -1,11 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
+// import LoginPage from "./pages/LoginPage";
+import NewLoginPage from "./pages/NewLoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import CouncilPage from "./pages/CouncilPage";
 import PortfolioPage from "./pages/PortfolioPage";
 import PerformancePage from "./pages/PerformancePage";
 import SettingsPage from "./pages/SettingsPage";
 import MemesPage from "./pages/MemesPage";
+import OakCoinPage from "./pages/OakCoinPage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -31,7 +33,8 @@ function PageLayout({ children }) {
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginPage />,
+    // element: <LoginPage />,
+    element: <NewLoginPage />,
   },
   {
     path: "/dashboard",
@@ -54,6 +57,14 @@ export const router = createBrowserRouter([
     element: (
       <PageLayout>
         <CouncilPage />
+      </PageLayout>
+    ),
+  },
+  {
+    path: "/oakcoin",
+    element: (
+      <PageLayout>
+        <OakCoinPage />
       </PageLayout>
     ),
   },
