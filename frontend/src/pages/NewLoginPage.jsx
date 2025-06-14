@@ -1,9 +1,12 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { AuroraBackground } from "../components/ui/aurora-background";
 
 function NewLoginPage() {
+  const navigate = useNavigate();
+
   const handleContinue = () => {
-    window.location.href = "/dashboard";
+    navigate("/dashboard");
   };
 
   return (
