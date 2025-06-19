@@ -18,13 +18,24 @@ function PageLayout({ children }) {
       style={{
         paddingTop: "64px",
         minHeight: "100vh",
-        background: "#f8fafc",
+        background: "#000000",
         display: "flex",
         flexDirection: "column",
       }}
     >
       <Navbar />
       <main style={{ flex: 1 }}>{children}</main>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            width: "700px",
+            height: "2px",
+            backgroundColor: "#ffffff",
+            borderRadius: "10px",
+            marginTop: "10px",
+          }}
+        ></div>
+      </div>
       <Footer />
     </div>
   );

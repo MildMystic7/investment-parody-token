@@ -16,7 +16,7 @@ function StatsCard({
           <h3 className={styles.title}>{title}</h3>
           {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
         </div>
-        {icon && <div className={styles.icon}>{icon}</div>}
+        {icon && <img src={icon} alt={title} className={styles.icon} />}
       </div>
 
       <div className={styles.content}>

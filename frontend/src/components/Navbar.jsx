@@ -1,113 +1,59 @@
-import { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import styles from "./Navbar.module.css";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Menu, MenuItem } from "./ui/navbar-menu";
+import { cn } from "../lib/utils";
 
-function Navbar() {
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const dropdownRef = useRef(null);
+function Navbar({ className }) {
+  const [active, setActive] = useState(null);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowUserDropdown(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  // Close dropdown when route changes
-  useEffect(() => {
-    setShowUserDropdown(false);
-  }, [location.pathname]);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-    setShowUserDropdown(false);
-  };
-
-  const toggleDropdown = () => {
-    setShowUserDropdown(!showUserDropdown);
-  };
-
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
-
-  // Don't show navbar on login page
   if (location.pathname === "/") {
     return null;
   }
 
   return (
-    <nav className={styles.navbar}>
-      <div className={styles.container}>
-        {/* Left Section - Brand and Navigation */}
-        <div className={styles.leftSection}>
-          <div className={styles.brand}>
-            <span className={styles.brandText}>OakmemeStratton</span>
-          </div>
+    <div
+      className={cn("fixed top-10 inset-x-0 max-w-4xl mx-auto z-50", className)}
+    >
+      <Menu
+        setActive={setActive}
+        className="justify-between w-full px-8 py-4 rounded-full bg-[#141414] border border-[#1f1f1f]"
+      >
+        <div className="text-white font-bold text-lg">OakmemeStratton</div>
 
-          <div className={styles.navLinks}>
-            <Link
-              to="/dashboard"
-              className={`${styles.navLink} ${
-                isActive("/dashboard") ? styles.active : ""
-              }`}
-            >
-              Home
-            </Link>
-            <Link
-              to="/memes"
-              className={`${styles.navLink} ${
-                isActive("/memes") ? styles.active : ""
-              }`}
-            >
-              Memes
-            </Link>
-            <Link
-              to="/portfolio"
-              className={`${styles.navLink} ${
-                isActive("/portfolio") ? styles.active : ""
-              }`}
-            >
-              Portfolio
-            </Link>
-            <Link
-              to="/council"
-              className={`${styles.navLink} ${
-                isActive("/council") ? styles.active : ""
-              }`}
-            >
-              Council
-            </Link>
-            <Link
-              to="/oakcoin"
-              className={`${styles.navLink} ${
-                isActive("/oakcoin") ? styles.active : ""
-              }`}
-            >
-              OakCoin
-            </Link>
-          </div>
+        <div className="flex items-center space-x-4">
+          <MenuItem
+            setActive={setActive}
+            active={active}
+            item="Memes"
+            href="/memes"
+          />
+          <MenuItem
+            setActive={setActive}
+            active={active}
+            item="Portfolio"
+            href="/portfolio"
+          />
+          <MenuItem
+            setActive={setActive}
+            active={active}
+            item="Council"
+            href="/council"
+          />
+          <MenuItem
+            setActive={setActive}
+            active={active}
+            item="OakCoin"
+            href="/oakcoin"
+          />
         </div>
 
-        {/* Right Section - User Dropdown */}
-        <div className={styles.rightSection}>
+        <div className="flex items-center space-x-4 text-white">
           <a
             href="https://twitter.com"
             target="_blank"
             rel="noopener noreferrer"
-            className={styles.socialLink}
+            className="hover:opacity-80 transition-opacity"
           >
             Twitter
           </a>
@@ -115,44 +61,16 @@ function Navbar() {
             href="https://telegram.org"
             target="_blank"
             rel="noopener noreferrer"
-            className={styles.socialLink}
+            className="hover:opacity-80 transition-opacity"
           >
             Telegram
           </a>
-
-          <div className={styles.userDropdown} ref={dropdownRef}>
-            <button className={styles.userButton} onClick={toggleDropdown}>
-              <span className={styles.userName}>
-                {user?.username || "DegenTrader"}
-              </span>
-              <span className={styles.dropdownIcon}>
-                {showUserDropdown ? "▲" : "▼"}
-              </span>
-            </button>
-
-            {showUserDropdown && (
-              <div className={styles.dropdownMenu}>
-                <div className={styles.userInfo}>
-                  <div className={styles.userAvatar}>👤</div>
-                  <div className={styles.userDetails}>
-                    <div className={styles.userDisplayName}>
-                      {user?.username || "DegenTrader"}
-                    </div>
-                    <div className={styles.userEmail}>
-                      {user?.email || "degen@oakmeme.com"}
-                    </div>
-                  </div>
-                </div>
-                <hr className={styles.divider} />
-                <button className={styles.logoutButton} onClick={handleLogout}>
-                  🚪 Logout
-                </button>
-              </div>
-            )}
+          <div className="hover:opacity-80 transition-opacity cursor-pointer">
+            Account
           </div>
         </div>
-      </div>
-    </nav>
+      </Menu>
+    </div>
   );
 }
 
