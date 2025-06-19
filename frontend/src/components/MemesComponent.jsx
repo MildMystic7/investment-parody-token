@@ -1,45 +1,28 @@
-import React, { useState } from "react";
-import styles from "./MemesPage.module.css";
+import React from "react";
+import styles from "./MemesComponent.module.css";
 
-const MemesPage = () => {
-  const [timeFilter, setTimeFilter] = useState("24h");
-
+const MemesComponent = () => {
   // Fake data for the dashboard boxes
   const mostVisitedData = [
     {
       rank: 1,
       name: "KAKA",
-      price: "$0.005892",
-      change: "-22.59%",
-      isNegative: true,
     },
     {
       rank: 2,
       name: "ZEUS",
-      price: "$0.08829",
-      change: "-30.98%",
-      isNegative: true,
     },
     {
       rank: 3,
       name: "TIBBIR",
-      price: "$0.0001008",
-      change: "+239.26%",
-      isNegative: false,
     },
     {
       rank: 4,
       name: "BNBXBT",
-      price: "$0.005499",
-      change: "+706.08%",
-      isNegative: false,
     },
     {
       rank: 5,
       name: "DUMP",
-      price: "$0.01071",
-      change: "-6.81%",
-      isNegative: true,
     },
   ];
 
@@ -48,13 +31,6 @@ const MemesPage = () => {
     { name: "CZGOAT", change: "+99.88%", color: "#10b981" },
     { name: "BUBB", change: "+76.91%", color: "#10b981" },
   ];
-
-  const marketCapData = {
-    value: "$64.22B",
-    change: "+8.13%",
-    volume: "$9.93B",
-    volumeChange: "+19.71%",
-  };
 
   // Fake data for the memecoins table
   const memecoinsData = [
@@ -211,60 +187,26 @@ const MemesPage = () => {
   ];
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>
-          Top Memes Tokens by Market Capitalization
-        </h1>
-        <p className={styles.subtitle}>
-          This page lists the top meme coins and tokens. These projects are
-          listed by market capitalization with the largest first and then
-          descending in order.
-        </p>
-      </div>
-
+    <>
       {/* Dashboard Boxes */}
       <div className={styles.dashboardBoxes}>
         {/* Most Visited */}
         <div className={styles.dashboardBox}>
           <div className={styles.boxHeader}>
             <h3 className={styles.boxTitle}>Most Visited</h3>
-            <div className={styles.boxIcons}>
-              <span>👁️</span>
-              <span>⏰</span>
-            </div>
           </div>
           <div className={styles.boxContent}>
             {mostVisitedData.map((item) => (
               <div key={item.rank} className={styles.listItem}>
                 <div className={styles.tokenInfo}>
                   <span className={styles.rank}>{item.rank}</span>
-                  <div className={styles.tokenIcon}>🪙</div>
-                  <span className={styles.tokenName}>{item.name}</span>
-                </div>
-                <div className={styles.priceInfo}>
-                  <span className={styles.price}>{item.price}</span>
-                  <span
-                    className={`${styles.change} ${
-                      item.isNegative ? styles.negative : styles.positive
-                    }`}
-                  >
-                    {item.change}
-                  </span>
-                </div>
-                <div className={styles.miniChart}>
-                  <svg viewBox="0 0 60 20" className={styles.miniChartSvg}>
-                    <path
-                      d={`M0,15 Q15,${Math.random() * 10 + 5} 30,${
-                        Math.random() * 10 + 5
-                      } Q45,${Math.random() * 10 + 5} 60,${
-                        Math.random() * 10 + 5
-                      }`}
-                      stroke={item.isNegative ? "#ef4444" : "#10b981"}
-                      strokeWidth="1.5"
-                      fill="none"
+                  <div className={styles.tokenIcon}>
+                    <img
+                      src={`https://s2.coinmarketcap.com/static/img/coins/64x64/74.png`}
+                      alt={item.name}
                     />
-                  </svg>
+                  </div>
+                  <span className={styles.tokenName}>{item.name}</span>
                 </div>
               </div>
             ))}
@@ -275,117 +217,23 @@ const MemesPage = () => {
         <div className={styles.dashboardBox}>
           <div className={styles.boxHeader}>
             <h3 className={styles.boxTitle}>Top Gainers</h3>
-            <div className={styles.timeFilters}>
-              <button
-                className={`${styles.timeFilter} ${
-                  timeFilter === "24h" ? styles.active : ""
-                }`}
-                onClick={() => setTimeFilter("24h")}
-              >
-                24h
-              </button>
-              <button
-                className={`${styles.timeFilter} ${
-                  timeFilter === "30d" ? styles.active : ""
-                }`}
-                onClick={() => setTimeFilter("30d")}
-              >
-                30d
-              </button>
-              <button
-                className={`${styles.timeFilter} ${
-                  timeFilter === "All" ? styles.active : ""
-                }`}
-                onClick={() => setTimeFilter("All")}
-              >
-                All
-              </button>
-            </div>
           </div>
           <div className={styles.boxContent}>
             <div className={styles.chartPlaceholder}>
               <div className={styles.chartLines}>
                 {topGainersData.map((item, index) => (
                   <div key={index} className={styles.chartLine}>
-                    <span
-                      className={styles.tokenDot}
-                      style={{ backgroundColor: item.color }}
-                    ></span>
+                    <div className={styles.tokenIcon}>
+                      <img
+                        src={`https://s2.coinmarketcap.com/static/img/coins/64x64/74.png`}
+                        alt={item.name}
+                      />
+                    </div>
                     <span className={styles.tokenLabel}>{item.name}</span>
                     <span className={styles.tokenGain}>{item.change}</span>
                   </div>
                 ))}
               </div>
-              <div className={styles.chartArea}>
-                <svg className={styles.chartSvg} viewBox="0 0 400 200">
-                  <path
-                    d="M0,150 Q100,120 200,100 T400,80"
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                  <path
-                    d="M0,160 Q100,140 200,130 T400,110"
-                    stroke="#f59e0b"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                  <path
-                    d="M0,170 Q100,150 200,140 T400,120"
-                    stroke="#3b82f6"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Market Cap */}
-        <div className={styles.dashboardBox}>
-          <div className={styles.boxHeader}>
-            <h3 className={styles.boxTitle}>Market Cap</h3>
-            <div className={styles.boxIcons}>
-              <span>📈</span>
-              <span>🔗</span>
-            </div>
-            <div className={styles.timeFilters}>
-              <button className={`${styles.timeFilter} ${styles.active}`}>
-                24h
-              </button>
-              <button className={styles.timeFilter}>30d</button>
-              <button className={styles.timeFilter}>All</button>
-            </div>
-          </div>
-          <div className={styles.boxContent}>
-            <div className={styles.marketCapInfo}>
-              <div className={styles.marketCapMain}>
-                <span className={styles.marketCapLabel}>● Market Cap</span>
-                <span className={styles.marketCapValue}>
-                  {marketCapData.value}
-                </span>
-                <span className={styles.positive}>{marketCapData.change}</span>
-              </div>
-              <div className={styles.volumeInfo}>
-                <span className={styles.volumeLabel}>Volume</span>
-                <span className={styles.volumeValue}>
-                  {marketCapData.volume}
-                </span>
-                <span className={styles.positive}>
-                  {marketCapData.volumeChange}
-                </span>
-              </div>
-            </div>
-            <div className={styles.chartArea}>
-              <svg className={styles.chartSvg} viewBox="0 0 400 150">
-                <path
-                  d="M0,100 Q50,80 100,70 Q150,60 200,65 Q250,70 300,60 Q350,50 400,45"
-                  stroke="#ef4444"
-                  strokeWidth="2"
-                  fill="none"
-                />
-              </svg>
             </div>
           </div>
         </div>
@@ -401,9 +249,6 @@ const MemesPage = () => {
           <div className={styles.tableCell}>24h %</div>
           <div className={styles.tableCell}>7d %</div>
           <div className={styles.tableCell}>Market Cap 💡</div>
-          <div className={styles.tableCell}>Volume(24h) 💡</div>
-          <div className={styles.tableCell}>Circulating Supply 💡</div>
-          <div className={styles.tableCell}>Last 7 Days</div>
         </div>
 
         {memecoinsData.map((coin) => (
@@ -413,7 +258,17 @@ const MemesPage = () => {
             </div>
             <div className={styles.tableCell}>
               <div className={styles.coinInfo}>
-                <div className={styles.coinIcon}>🪙</div>
+                <div className={styles.coinIcon}>
+                  <img
+                    src={`https://s2.coinmarketcap.com/static/img/coins/64x64/29743.png`}
+                    alt={coin.name}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src =
+                        "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png";
+                    }}
+                  />
+                </div>
                 <div className={styles.coinDetails}>
                   <span className={styles.coinName}>{coin.name}</span>
                   <span className={styles.coinSymbol}>{coin.symbol}</span>
@@ -456,33 +311,11 @@ const MemesPage = () => {
             <div className={styles.tableCell}>
               <span className={styles.marketCap}>{coin.marketCap}</span>
             </div>
-            <div className={styles.tableCell}>
-              <span className={styles.volume}>{coin.volume}</span>
-            </div>
-            <div className={styles.tableCell}>
-              <span className={styles.supply}>{coin.supply}</span>
-            </div>
-            <div className={styles.tableCell}>
-              <div className={styles.miniChart}>
-                <svg viewBox="0 0 100 30" className={styles.miniChartSvg}>
-                  <path
-                    d={`M0,25 Q25,${Math.random() * 20 + 5} 50,${
-                      Math.random() * 20 + 5
-                    } Q75,${Math.random() * 20 + 5} 100,${
-                      Math.random() * 20 + 5
-                    }`}
-                    stroke={coin.isNegative7d ? "#ef4444" : "#10b981"}
-                    strokeWidth="1.5"
-                    fill="none"
-                  />
-                </svg>
-              </div>
-            </div>
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
-export default MemesPage;
+export default MemesComponent;

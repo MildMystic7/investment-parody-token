@@ -75,7 +75,7 @@ const chartData = [
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="p-4 bg-gray-900 flex flex-col gap-4 rounded-md border border-gray-700">
+      <div className="p-4 bg-[#111116] flex flex-col gap-4 rounded-md border border-gray-700">
         <div className="text-medium text-lg text-white">{label}</div>
         <div className="text-sm text-white">
           Bonk:
@@ -115,12 +115,10 @@ export function ChartAreaInteractive() {
   const filteredData = getFilteredData();
 
   return (
-    <div className="bg-gray-800 p-8 rounded-2xl text-white max-w-[1600px] mx-auto w-full">
+    <div className="bg-[#111116] p-8 rounded-2xl text-white max-w-[1600px] mx-auto w-full">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h3 className="text-2xl font-bold text-white">
-            Performance Chart
-          </h3>
+          <h3 className="text-2xl font-bold text-white">Performance Chart</h3>
           <p className="text-white text-md mt-2">
             Showing total portfolio value for the last{" "}
             {timeRange === "30d"
@@ -131,7 +129,7 @@ export function ChartAreaInteractive() {
           </p>
         </div>
         <select
-          className="bg-gray-700 text-white px-4 py-2 border border-gray-600 rounded-lg text-sm"
+          className="bg-[#2e2e33] text-white px-4 py-2 border border-gray-600 rounded-lg text-sm"
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
         >

@@ -30,18 +30,19 @@
 /* Dashboard Boxes */
 .dashboardBoxes {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-bottom: 32px;
 }
 
 .dashboardBox {
-  background: #2a2a2a;
+  background: #111116;
   border-radius: 12px;
   padding: 16px;
   border: 1px solid #404040;
   min-height: 200px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  color: white;
 }
 
 .boxHeader {
@@ -49,6 +50,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  background: #111116;
+  border-radius: 12px;
+  border: 1px solid #404040;
+  overflow: hidden;
 }
 
 .boxTitle {
@@ -124,9 +129,10 @@
   margin-left: 10px;
 }
 
-.tokenIcon {
-  font-size: 16px;
-  flex-shrink: 0;
+.tokenIcon img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
 }
 
 .tokenName {
@@ -265,7 +271,7 @@
 
 /* Table */
 .tableContainer {
-  background: #2a2a2a;
+  background: #111116;
   border-radius: 12px;
   border: 1px solid #404040;
   overflow: hidden;
@@ -273,15 +279,15 @@
 
 .tableHeader {
   display: grid;
-  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px 150px 150px 120px;
-  background: #1a1a1a;
+  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px;
+  background: #2e2e33;
   border-bottom: 1px solid #404040;
   padding: 16px 0;
 }
 
 .tableRow {
   display: grid;
-  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px 150px 150px 120px;
+  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px;
   border-bottom: 1px solid #404040;
   padding: 16px 0;
   transition: background-color 0.2s ease;
@@ -332,6 +338,12 @@
 
 .coinIcon {
   font-size: 24px;
+}
+
+.coinIcon img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
 }
 
 .coinDetails {
@@ -398,7 +410,7 @@
 
   .tableHeader,
   .tableRow {
-    grid-template-columns: 60px 180px 100px 70px 70px 70px 130px 130px 130px 100px;
+    grid-template-columns: 60px 180px 100px 70px 70px 70px 130px;
   }
 }
 

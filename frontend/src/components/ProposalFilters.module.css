@@ -9,7 +9,7 @@
 .title {
   font-size: 24px;
   font-weight: 700;
-  color: #1e293b;
+  color: #ffffff;
   margin: 0;
   display: flex;
   align-items: center;
@@ -47,8 +47,8 @@
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
-  color: #1f2937;
-  background: white;
+  color: #ffffff;
+  background: #2e2e33;
   transition: all 0.2s ease;
 }
 
@@ -79,8 +79,8 @@
 .filterButton {
   padding: 8px 16px;
   border: 1px solid #e2e8f0;
-  background: white;
-  color: #64748b;
+  background: #111116;
+  color: #ffffff;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
@@ -94,7 +94,7 @@
 
 .filterButton:hover {
   border-color: #cbd5e1;
-  background: #f8fafc;
+  background: #2e2e33;
 }
 
 .filterButton.active {

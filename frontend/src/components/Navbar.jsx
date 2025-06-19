@@ -19,15 +19,16 @@ function Navbar({ className }) {
         setActive={setActive}
         className="justify-between w-full px-8 py-4 rounded-full bg-[#141414] border border-[#1f1f1f]"
       >
-        <div className="text-white font-bold text-lg">OakmemeStratton</div>
-
-        <div className="flex items-center space-x-4">
+        <div className="text-white font-bold text-lg">
           <MenuItem
             setActive={setActive}
             active={active}
-            item="Memes"
-            href="/memes"
+            item="OakmemeStratton"
+            href="/dashboard"
           />
+        </div>
+
+        <div className="flex items-center space-x-4">
           <MenuItem
             setActive={setActive}
             active={active}

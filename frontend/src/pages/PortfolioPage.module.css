@@ -5,18 +5,20 @@
 }
 
 .header {
-  margin-bottom: 40px;
+  margin-bottom: 60px;
+  text-align: center;
+  margin-top: 40px;
 }
 
 .header h1 {
-  color: #1e293b;
+  color: #ffffff;
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 8px;
 }
 
 .header p {
-  color: #64748b;
+  color: #a0aec0;
   font-size: 16px;
 }
 

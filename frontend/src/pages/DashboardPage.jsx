@@ -7,6 +7,7 @@ import profilePicture from "../assets/Xpfp.jpg";
 import { ContainerScroll } from "../components/ui/container-scroll-animation";
 import bonk from "../assets/bonk.webp";
 import fartcoin from "../assets/fartcoin.webp";
+import MemesComponent from "../components/MemesComponent";
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -383,6 +384,7 @@ function DashboardPage() {
             </div>
           </div>
         </div>
+        <MemesComponent />
 
         {/* User Info Section */}
         <div className={styles.userSection}>

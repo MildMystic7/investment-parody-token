@@ -6,23 +6,24 @@
   flex-direction: column;
   gap: 30px;
   width: 100%;
+  margin-top: 40px;
 }
 
 .pageHeader {
-  text-align: left;
-  margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .pageHeader h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #1e293b;
+  color: #ffffff;
   margin: 0 0 8px 0;
 }
 
 .pageHeader p {
   font-size: 18px;
-  color: #64748b;
+  color: #ffffff;
   margin: 0;
   line-height: 1.6;
 }
@@ -37,14 +38,14 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 60px 20px;
-  background: white;
+  background: #111116;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
 }
 
 .noResults p {
   font-size: 16px;
-  color: #64748b;
+  color: #ffffff;
   margin: 0;
 }
 
@@ -98,7 +99,7 @@
 }
 
 .comingSoon {
-  background: white;
+  background: #111116;
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -107,14 +108,14 @@
 }
 
 .comingSoon h2 {
-  color: #1e293b;
+  color: #ffffff;
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 16px;
 }
 
 .comingSoon p {
-  color: #64748b;
+  color: #ffffff;
   font-size: 16px;
   line-height: 1.6;
   margin-bottom: 30px;
@@ -122,14 +123,14 @@
 
 .features {
   text-align: left;
-  background: #f8fafc;
+  background: #111116;
   padding: 24px;
   border-radius: 8px;
   border-left: 4px solid #3b82f6;
 }
 
 .features h3 {
-  color: #1e293b;
+  color: #ffffff;
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
@@ -141,7 +142,7 @@
 }
 
 .features li {
-  color: #475569;
+  color: #ffffff;
   padding: 8px 0;
   position: relative;
   padding-left: 20px;

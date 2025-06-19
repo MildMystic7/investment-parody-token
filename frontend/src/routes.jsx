@@ -6,7 +6,7 @@ import CouncilPage from "./pages/CouncilPage";
 import PortfolioPage from "./pages/PortfolioPage";
 import PerformancePage from "./pages/PerformancePage";
 import SettingsPage from "./pages/SettingsPage";
-import MemesPage from "./pages/MemesPage";
+
 import OakCoinPage from "./pages/OakCoinPage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -24,18 +24,7 @@ function PageLayout({ children }) {
       }}
     >
       <Navbar />
-      <main style={{ flex: 1 }}>{children}</main>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <div
-          style={{
-            width: "700px",
-            height: "2px",
-            backgroundColor: "#ffffff",
-            borderRadius: "10px",
-            marginTop: "10px",
-          }}
-        ></div>
-      </div>
+      <main style={{ flex: 1, marginTop: "40px" }}>{children}</main>
       <Footer />
     </div>
   );
@@ -52,14 +41,6 @@ export const router = createBrowserRouter([
     element: (
       <PageLayout>
         <DashboardPage />
-      </PageLayout>
-    ),
-  },
-  {
-    path: "/memes",
-    element: (
-      <PageLayout>
-        <MemesPage />
       </PageLayout>
     ),
   },

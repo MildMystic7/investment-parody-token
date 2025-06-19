@@ -5,10 +5,6 @@ import ProposalCard from "../components/ProposalCard";
 import styles from "./CouncilPage.module.css";
 
 function CouncilPage() {
-  const [filteredProposals, setFilteredProposals] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeFilter, setActiveFilter] = useState("all");
-
   // Fake proposal data matching the screenshot
   const allProposals = [
     {
@@ -20,6 +16,8 @@ function CouncilPage() {
         "BONK is the Solana memecoin with massive community support and growing adoption. The meme potential is still massive.",
       avatar: "🐕",
       status: "active",
+      votesFor: 53,
+      votesAgainst: 12,
     },
     {
       id: 2,
@@ -30,6 +28,8 @@ function CouncilPage() {
         "PEPE has been one of our best performing assets. The meme potential is still massive.",
       avatar: "🐸",
       status: "active",
+      votesFor: 30,
+      votesAgainst: 5,
     },
     {
       id: 3,
@@ -40,78 +40,12 @@ function CouncilPage() {
         "Dog wif hat ($WIF) is taking over Twitter and has massive meme potential. The Solana ecosystem is booming and this could be our next 100x.",
       avatar: "🐕",
       status: "active",
-    },
-    {
-      id: 4,
-      title: "Should we invest in SHIB ecosystem?",
-      proposedBy: "ShibArmy",
-      date: "Apr 17, 2025",
-      description:
-        "Shiba Inu has evolved beyond just a meme coin with Shibarium and DeFi integrations. Time to ape in! 🚀",
-      avatar: "🐕",
-      status: "passed",
-    },
-    {
-      id: 5,
-      title: "Allocate funds to DOGE",
-      proposedBy: "ElonFan",
-      date: "Apr 16, 2025",
-      description:
-        "The original meme coin is making a comeback. With Elon's continued support and X integration rumors, this could moon! 🌙",
-      avatar: "🐕",
-      status: "passed",
-    },
-    {
-      id: 6,
-      title: "Invest in SafeMoon revival",
-      proposedBy: "MoonBoy",
-      date: "Apr 15, 2025",
-      description:
-        "SafeMoon is attempting a comeback with new tokenomics. High risk, high reward play for the degen council.",
-      avatar: "🌙",
-      status: "rejected",
+      votesFor: 102,
+      votesAgainst: 25,
     },
   ];
 
-  const handleFilterChange = (filter) => {
-    setActiveFilter(filter);
-    filterProposals(filter, searchTerm);
-  };
-
-  const handleSearchChange = (search) => {
-    setSearchTerm(search);
-    filterProposals(activeFilter, search);
-  };
-
-  const filterProposals = (filter, search) => {
-    let filtered = allProposals;
-
-    // Filter by status
-    if (filter !== "all") {
-      filtered = filtered.filter((proposal) => proposal.status === filter);
-    }
-
-    // Filter by search term
-    if (search) {
-      filtered = filtered.filter(
-        (proposal) =>
-          proposal.title.toLowerCase().includes(search.toLowerCase()) ||
-          proposal.description.toLowerCase().includes(search.toLowerCase()) ||
-          proposal.proposedBy.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    setFilteredProposals(filtered);
-  };
-
-  // Initialize with all proposals
-  useEffect(() => {
-    setFilteredProposals(allProposals);
-  }, []);
-
-  const activeProposalsCount = allProposals.filter(
-    (p) => p.status === "active"
-  ).length;
+  const activeProposals = allProposals.filter((p) => p.status === "active");
 
   return (
     <div className={styles.container}>
@@ -128,16 +62,12 @@ function CouncilPage() {
       <ProposalForm />
 
       {/* Filters */}
-      <ProposalFilters
-        onFilterChange={handleFilterChange}
-        onSearchChange={handleSearchChange}
-        activeCount={activeProposalsCount}
-      />
+      <ProposalFilters activeCount={activeProposals.length} />
 
       {/* Proposals Grid */}
       <div className={styles.proposalsGrid}>
-        {filteredProposals.length > 0 ? (
-          filteredProposals.map((proposal) => (
+        {activeProposals.length > 0 ? (
+          activeProposals.map((proposal) => (
             <ProposalCard
               key={proposal.id}
               title={proposal.title}
@@ -146,11 +76,13 @@ function CouncilPage() {
               description={proposal.description}
               avatar={proposal.avatar}
               status={proposal.status}
+              votesFor={proposal.votesFor}
+              votesAgainst={proposal.votesAgainst}
             />
           ))
         ) : (
           <div className={styles.noResults}>
-            <p>No proposals found matching your criteria.</p>
+            <p>No active proposals at the moment.</p>
           </div>
         )}
       </div>

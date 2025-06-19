@@ -7,6 +7,8 @@ function ProposalCard({
   description,
   avatar,
   status = "active",
+  votesFor,
+  votesAgainst,
 }) {
   return (
     <div className={`${styles.card} ${styles[status]}`}>
@@ -38,14 +40,8 @@ function ProposalCard({
             👎 Vote Against
           </button>
         </div>
-        <div className={styles.status}>
-          <span className={styles.statusBadge}>
-            {status === "active" && "🟢 Active"}
-            {status === "passed" && "✅ Passed"}
-            {status === "rejected" && "❌ Rejected"}
-          </span>
-        </div>
       </div>
+      <div className={styles.voteCount}>Votes: {votesFor + votesAgainst}</div>
     </div>
   );
 }
