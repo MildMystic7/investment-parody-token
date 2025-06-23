@@ -1,86 +1,63 @@
 import express from 'express';
-import { getTokenInfo } from '../api/dex-api.js';
+import axios from 'axios';
 import logger from '../utils/logger.js';
 
 const router = express.Router();
 
-/**
- * @swagger
- * tags:
- *   name: Crypto
- *   description: Endpoints para informação de tokens
- */
-
-/**
- * @swagger
- * /token/{tokenAddress}:
- *   get:
- *     summary: Obtém informação do token pelo endereço
- *     tags: [Token]
- *     parameters:
- *       - in: path
- *         name: tokenAddress
- *         schema:
- *           type: string
- *         required: true
- *         description: Endereço do token a consultar
- *     responses:
- *       200:
- *         description: Informações do token encontradas com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: json
- *                   example: {}
- *       404:
- *         description: Token não encontrado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: string
- *                   example: "CA xxxx não encontrado"
- *       500:
- *         description: Erro interno no servidor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: string
- *                   example: "Erro ao consultar token"
- */
-router.get('/:tokenAddress', async (req, res) => {
+router.get('/ca/:tokenAddress', async (req, res) => {
   const { tokenAddress } = req.params;
 
   try {
-    const tokenAddress_res = await getTokenInfo(tokenAddress);
+    const response = await axios.get(`https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`);
 
-    if (tokenAddress_res.success) {
+    if (response.data && response.data.pairs && response.data.pairs.length > 0) {
+      const tokenData = response.data.pairs[0]; // Pode haver vários pares, aqui assume-se o primeiro
       logger.info(`Token encontrado: ${tokenAddress}`);
-      return res.json(tokenAddress_res); 
+      return res.json({ success: true, data: tokenData });
     } else {
       logger.warn(`Token não encontrado: ${tokenAddress}`);
-      return res.status(404).json(tokenAddress_res);
+      return res.status(404).json({ success: false, message: 'Token não encontrado na DexScreener.' });
     }
   } catch (error) {
     logger.error(`Erro ao consultar token ${tokenAddress}: ${error.message}`);
     return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/top-meme-coins', async (req, res) => {
+  try {
+    const response = await axios.get(
+      'https://api.coingecko.com/api/v3/coins/markets',
+      {
+        params: {
+          vs_currency: 'usd',
+          category: 'meme-token',
+          order: 'market_cap_desc',
+          per_page: 30,
+          page: 1,
+        },
+      }
+    );
+
+  const memeCoins = response.data.map(coin => {
+    const platforms = coin.platforms || {};
+    const [network, address] = Object.entries(platforms)[0] || [null, null];
+
+    return {
+      name: coin.name,
+      symbol: coin.symbol,
+      price: coin.current_price,
+      marketCap: coin.market_cap,
+      contractAddress: address,
+      network: network,
+      image: coin.image,
+    };
+  });
+
+    res.json({ success: true, count: memeCoins.length, data: memeCoins });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ success: false, error: 'Erro ao buscar meme coins' });
   }
 });
 

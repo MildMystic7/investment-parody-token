@@ -10,40 +10,6 @@ if (!WALLET) {
 
 const router = express.Router();
 
-/**
- * @swagger
- * /wallet/getInfoWallet:
- *   get:
- *     summary: Obtém informações completas de uma wallet Solana
- *     tags: [Wallet]
- *     responses:
- *       200:
- *         description: Dados obtidos com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success: { type: boolean, example: true }
- *                 data:
- *                   type: object
- *                   properties:
- *                     wallet: { type: string, example: "86AE..." }
- *                     balance: { type: number, example: 12.3456 }
- *                     unit: { type: string, example: "SOL" }
- *                     priceUsd: { type: number, example: 143.52 }
- *                     holdingsUsd: { type: number, example: 1772.5 }
- *                     priceChange:
- *                       type: object
- *                       properties:
- *                         1d: { type: number, example: -2.1 }
- *                         7d: { type: number, example: 5.3 }
- *                         30d: { type: number, example: 18.7 }
- *       404:
- *         description: Erro ao obter dados
- *       500:
- *         description: Erro interno
- */
 router.get('/getInfoWallet', async (req, res) => {
   try {
     const result = await getSolanaPortfolio(WALLET);
