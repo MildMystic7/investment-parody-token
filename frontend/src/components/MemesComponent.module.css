@@ -49,10 +49,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 22px;
   background: #111116;
-  border-radius: 12px;
-  border: 1px solid #404040;
   overflow: hidden;
 }
 
@@ -275,11 +273,12 @@
   border-radius: 12px;
   border: 1px solid #404040;
   overflow: hidden;
+  margin-top: 40px;
 }
 
 .tableHeader {
   display: grid;
-  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px;
+  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px 100px;
   background: #2e2e33;
   border-bottom: 1px solid #404040;
   padding: 16px 0;
@@ -287,7 +286,7 @@
 
 .tableRow {
   display: grid;
-  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px;
+  grid-template-columns: 80px 200px 120px 80px 80px 80px 150px 100px;
   border-bottom: 1px solid #404040;
   padding: 16px 0;
   transition: background-color 0.2s ease;
@@ -410,7 +409,7 @@
 
   .tableHeader,
   .tableRow {
-    grid-template-columns: 60px 180px 100px 70px 70px 70px 130px;
+    grid-template-columns: 60px 180px 100px 70px 70px 70px 130px 80px;
   }
 }
 

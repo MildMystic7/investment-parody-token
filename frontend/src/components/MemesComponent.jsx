@@ -3,34 +3,6 @@ import styles from "./MemesComponent.module.css";
 
 const MemesComponent = () => {
   // Fake data for the dashboard boxes
-  const mostVisitedData = [
-    {
-      rank: 1,
-      name: "KAKA",
-    },
-    {
-      rank: 2,
-      name: "ZEUS",
-    },
-    {
-      rank: 3,
-      name: "TIBBIR",
-    },
-    {
-      rank: 4,
-      name: "BNBXBT",
-    },
-    {
-      rank: 5,
-      name: "DUMP",
-    },
-  ];
-
-  const topGainersData = [
-    { name: "WAP", change: "+282.68%", color: "#10b981" },
-    { name: "CZGOAT", change: "+99.88%", color: "#10b981" },
-    { name: "BUBB", change: "+76.91%", color: "#10b981" },
-  ];
 
   // Fake data for the memecoins table
   const memecoinsData = [
@@ -188,57 +160,6 @@ const MemesComponent = () => {
 
   return (
     <>
-      {/* Dashboard Boxes */}
-      <div className={styles.dashboardBoxes}>
-        {/* Most Visited */}
-        <div className={styles.dashboardBox}>
-          <div className={styles.boxHeader}>
-            <h3 className={styles.boxTitle}>Most Visited</h3>
-          </div>
-          <div className={styles.boxContent}>
-            {mostVisitedData.map((item) => (
-              <div key={item.rank} className={styles.listItem}>
-                <div className={styles.tokenInfo}>
-                  <span className={styles.rank}>{item.rank}</span>
-                  <div className={styles.tokenIcon}>
-                    <img
-                      src={`https://s2.coinmarketcap.com/static/img/coins/64x64/74.png`}
-                      alt={item.name}
-                    />
-                  </div>
-                  <span className={styles.tokenName}>{item.name}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Top Gainers */}
-        <div className={styles.dashboardBox}>
-          <div className={styles.boxHeader}>
-            <h3 className={styles.boxTitle}>Top Gainers</h3>
-          </div>
-          <div className={styles.boxContent}>
-            <div className={styles.chartPlaceholder}>
-              <div className={styles.chartLines}>
-                {topGainersData.map((item, index) => (
-                  <div key={index} className={styles.chartLine}>
-                    <div className={styles.tokenIcon}>
-                      <img
-                        src={`https://s2.coinmarketcap.com/static/img/coins/64x64/74.png`}
-                        alt={item.name}
-                      />
-                    </div>
-                    <span className={styles.tokenLabel}>{item.name}</span>
-                    <span className={styles.tokenGain}>{item.change}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Memecoins Table */}
       <div className={styles.tableContainer}>
         <div className={styles.tableHeader}>
@@ -249,6 +170,7 @@ const MemesComponent = () => {
           <div className={styles.tableCell}>24h %</div>
           <div className={styles.tableCell}>7d %</div>
           <div className={styles.tableCell}>Market Cap 💡</div>
+          <div className={styles.tableCell}>Vote</div>
         </div>
 
         {memecoinsData.map((coin) => (
@@ -273,9 +195,6 @@ const MemesComponent = () => {
                   <span className={styles.coinName}>{coin.name}</span>
                   <span className={styles.coinSymbol}>{coin.symbol}</span>
                 </div>
-                <button className={styles.buyButton}>
-                  <a href="/council">Vote</a>
-                </button>
               </div>
             </div>
             <div className={styles.tableCell}>
@@ -310,6 +229,11 @@ const MemesComponent = () => {
             </div>
             <div className={styles.tableCell}>
               <span className={styles.marketCap}>{coin.marketCap}</span>
+            </div>
+            <div className={styles.tableCell}>
+              <button className={styles.buyButton}>
+                <a href="/council">Vote</a>
+              </button>
             </div>
           </div>
         ))}

@@ -121,7 +121,7 @@ function DashboardPage() {
           </div>
           <div className="space-y-8 max-h-[400px] overflow-y-auto">
             {/* Elon Musk Tweet */}
-            <div className="bg-black text-white rounded-xl p-6 border border-gray-800 hover:border-gray-600 transition-colors">
+            <div className="bg-[#111116] text-white rounded-xl p-6 border border-gray-800 hover:border-gray-600 transition-colors">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-sm font-bold">
                   EM
@@ -284,7 +284,7 @@ function DashboardPage() {
             </div>
 
             {/* Fartcoin Tweet */}
-            <div className="bg-black text-white rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+            <div className="bg-[#111116] text-white rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-colors">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-sm font-bold">
                   F

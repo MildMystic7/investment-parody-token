@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import ProposalForm from "../components/ProposalForm";
 import ProposalFilters from "../components/ProposalFilters";
 import ProposalCard from "../components/ProposalCard";
@@ -16,8 +15,8 @@ function CouncilPage() {
         "BONK is the Solana memecoin with massive community support and growing adoption. The meme potential is still massive.",
       avatar: "🐕",
       status: "active",
-      votesFor: 53,
-      votesAgainst: 12,
+      votesFor: 847,
+      votesAgainst: 123,
     },
     {
       id: 2,
@@ -28,8 +27,8 @@ function CouncilPage() {
         "PEPE has been one of our best performing assets. The meme potential is still massive.",
       avatar: "🐸",
       status: "active",
-      votesFor: 30,
-      votesAgainst: 5,
+      votesFor: 642,
+      votesAgainst: 89,
     },
     {
       id: 3,
@@ -40,8 +39,8 @@ function CouncilPage() {
         "Dog wif hat ($WIF) is taking over Twitter and has massive meme potential. The Solana ecosystem is booming and this could be our next 100x.",
       avatar: "🐕",
       status: "active",
-      votesFor: 102,
-      votesAgainst: 25,
+      votesFor: 1234,
+      votesAgainst: 456,
     },
   ];
 

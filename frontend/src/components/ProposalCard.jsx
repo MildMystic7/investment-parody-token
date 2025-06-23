@@ -34,14 +34,13 @@ function ProposalCard({
       <div className={styles.footer}>
         <div className={styles.actions}>
           <button className={`${styles.voteButton} ${styles.upvote}`}>
-            👍 Vote For
+            👍 Vote For ({votesFor})
           </button>
           <button className={`${styles.voteButton} ${styles.downvote}`}>
-            👎 Vote Against
+            👎 Vote Against ({votesAgainst})
           </button>
         </div>
       </div>
-      <div className={styles.voteCount}>Votes: {votesFor + votesAgainst}</div>
     </div>
   );
 }
