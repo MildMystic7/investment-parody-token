@@ -1,0 +1,147 @@
+.candidate {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.candidate:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.candidate.active {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.stockInfo {
+  flex: 1;
+}
+
+.symbol {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+}
+
+.company {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.chartIcon {
+  font-size: 16px;
+  opacity: 0.6;
+}
+
+.priceSection {
+  margin-bottom: 16px;
+}
+
+.price {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.change {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.change.positive {
+  color: #10b981;
+}
+
+.change.negative {
+  color: #ef4444;
+}
+
+.changeIcon {
+  font-size: 12px;
+}
+
+.miniChart {
+  margin-bottom: 16px;
+  height: 60px;
+  background: #f8fafc;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.chartPlaceholder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.chartLine {
+  width: 100%;
+  height: 2px;
+  border-radius: 1px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    currentColor 20%,
+    currentColor 80%,
+    transparent 100%
+  );
+}
+
+.chartLine.chartPositive {
+  color: #10b981;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #10b981 100%);
+  transform: translateY(-50%) rotate(-2deg);
+}
+
+.chartLine.chartNegative {
+  color: #ef4444;
+  background: linear-gradient(90deg, #ef4444 0%, #f87171 50%, #ef4444 100%);
+  transform: translateY(-50%) rotate(2deg);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.value {
+  font-size: 12px;
+  color: #1e293b;
+  font-weight: 600;
+}

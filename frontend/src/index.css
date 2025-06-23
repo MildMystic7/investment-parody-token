@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+  --animate-aurora: aurora 60s linear infinite;
+  @keyframes aurora {
+    from {
+      background-position: 50% 50%, 50% 50%;
+    }
+    to {
+      background-position: 350% 50%, 350% 50%;
+    }
+  }
+}
+
+@tailwind utilities;
+
+/* CSS Variables for consistent font usage */
+:root {
+  --font-primary: "Inter", "Times New Roman", Arial, sans-serif;
+}
+
+html,
+body {
+  font-family: var(--font-primary);
+  background-color: #000000;
+}

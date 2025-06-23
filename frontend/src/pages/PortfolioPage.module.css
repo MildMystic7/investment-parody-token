@@ -1,0 +1,28 @@
+.container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 60px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.header h1 {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: #a0aec0;
+  font-size: 16px;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+}
