@@ -1,7 +1,6 @@
 "use client";
 import React, { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
-import { motion } from "motion/react";
 
 export const ContainerScroll = ({ titleComponent, children }) => {
   const containerRef = useRef(null);
@@ -31,7 +30,7 @@ export const ContainerScroll = ({ titleComponent, children }) => {
 
   return (
     <div
-      className="h-[55rem] md:h-[65rem] flex items-center justify-center relative p-2 md:p-10"
+      className="h-[70rem] md:h-[65rem] flex items-center justify-center relative p-2 md:p-10"
       ref={containerRef}
     >
       <div
@@ -51,29 +50,29 @@ export const ContainerScroll = ({ titleComponent, children }) => {
 
 export const Header = ({ translate, titleComponent }) => {
   return (
-    <motion.div
+    <div
       style={{
         translateY: translate,
       }}
       className="div max-w-5xl mx-auto text-center"
     >
       {titleComponent}
-    </motion.div>
+    </div>
   );
 };
 
 export const Card = ({ rotate, scale, children }) => {
   return (
-    <motion.div
+    <div
       style={{
         rotateX: rotate,
         scale,
       }}
-      className="max-w-5xl -mt-12 mx-auto h-[20rem] md:h-[30rem] w-full border-4 border-[#FFE8D6] p-2 md:p-6 bg-[#F9F6F7] rounded-[30px] shadow-2xl"
+      className="max-w-5xl -mt-12 mx-auto h-[40rem] md:h-[30rem] w-full border-4 border-[#FFE8D6] p-2 md:p-6 bg-[#F9F6F7] rounded-[30px] shadow-2xl"
     >
       <div className="h-full w-full rounded-2xl bg-[#F9F6F7] md:rounded-2xl md:p-4">
         {children}
       </div>
-    </motion.div>
+    </div>
   );
 };

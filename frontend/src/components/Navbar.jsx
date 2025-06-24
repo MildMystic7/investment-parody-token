@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { Menu, MenuItem } from "./ui/navbar-menu";
 import { cn } from "../lib/utils";
 
 function Navbar({ className }) {
   const [active, setActive] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
   if (location.pathname === "/") {
@@ -28,7 +29,7 @@ function Navbar({ className }) {
           />
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-4">
           <MenuItem
             setActive={setActive}
             active={active}
@@ -49,7 +50,7 @@ function Navbar({ className }) {
           />
         </div>
 
-        <div className="flex items-center space-x-4 text-black">
+        <div className="hidden md:flex items-center space-x-4 text-black">
           <a
             href="https://twitter.com"
             target="_blank"
@@ -70,7 +71,92 @@ function Navbar({ className }) {
             Account
           </div>
         </div>
+        {/* Hamburger Menu Button */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-black"
+          >
+            {isMenuOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
       </Menu>
+
+      {/* Mobile Menu Dropdown */}
+      {isMenuOpen && (
+        <div className="md:hidden mt-2 bg-[#F9F6F7] rounded-2xl p-6 text-black shadow-lg border border-[#FFE8D6]">
+          <nav className="flex flex-col items-start space-y-4 text-lg">
+            <Link
+              to="/portfolio"
+              className="hover:text-[#FF971D]"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Portfolio
+            </Link>
+            <Link
+              to="/council"
+              className="hover:text-[#FF971D]"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Council
+            </Link>
+            <Link
+              to="/oakcoin"
+              className="hover:text-[#FF971D]"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              OakCoin
+            </Link>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#FF971D]"
+            >
+              Twitter
+            </a>
+            <a
+              href="https://telegram.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#FF971D]"
+            >
+              Telegram
+            </a>
+            <div className="hover:text-[#FF971D] cursor-pointer">Account</div>
+          </nav>
+        </div>
+      )}
     </div>
   );
 }
