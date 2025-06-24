@@ -18,7 +18,7 @@ export const MenuItem = ({ setActive, active, item, children, href }) => {
     <div onMouseEnter={() => setActive(item)} className="relative ">
       <motion.p
         transition={{ duration: 0.3 }}
-        className="cursor-pointer text-white hover:opacity-[0.9]"
+        className="cursor-pointer text-black hover:opacity-[0.9]"
       >
         {item}
       </motion.p>
@@ -33,7 +33,7 @@ export const MenuItem = ({ setActive, active, item, children, href }) => {
               <motion.div
                 transition={transition}
                 layoutId="active" // layoutId ensures smooth animation
-                className="bg-white dark:bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
+                className="bg-white backdrop-blur-sm rounded-2xl overflow-hidden border border-[#FFE8D6] shadow-xl"
               >
                 <motion.div
                   layout // layout ensures smooth animation
@@ -74,12 +74,8 @@ export const ProductItem = ({ title, description, href, src }) => {
         className="shrink-0 rounded-md shadow-2xl"
       />
       <div>
-        <h4 className="text-xl font-bold mb-1 text-black dark:text-white">
-          {title}
-        </h4>
-        <p className="text-neutral-700 text-sm max-w-[10rem] dark:text-neutral-300">
-          {description}
-        </p>
+        <h4 className="text-xl font-bold mb-1 text-black">{title}</h4>
+        <p className="text-neutral-700 text-sm max-w-[10rem]">{description}</p>
       </div>
     </a>
   );
@@ -87,10 +83,7 @@ export const ProductItem = ({ title, description, href, src }) => {
 
 export const HoveredLink = ({ children, ...rest }) => {
   return (
-    <Link
-      {...rest}
-      className="text-neutral-700 dark:text-neutral-200 hover:text-black "
-    >
+    <Link {...rest} className="text-neutral-700 hover:text-black ">
       {children}
     </Link>
   );

@@ -17,9 +17,9 @@ function Navbar({ className }) {
     >
       <Menu
         setActive={setActive}
-        className="justify-between w-full px-8 py-4 rounded-full bg-[#141414] border border-[#1f1f1f]"
+        className="justify-between w-full px-8 py-4 rounded-full bg-[#F9F6F7] border border-[#FFE8D6]"
       >
-        <div className="text-white font-bold text-lg">
+        <div className="text-black font-bold text-lg">
           <MenuItem
             setActive={setActive}
             active={active}
@@ -49,7 +49,7 @@ function Navbar({ className }) {
           />
         </div>
 
-        <div className="flex items-center space-x-4 text-white">
+        <div className="flex items-center space-x-4 text-black">
           <a
             href="https://twitter.com"
             target="_blank"

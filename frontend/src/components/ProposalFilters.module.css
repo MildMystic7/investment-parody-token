@@ -9,7 +9,7 @@
 .title {
   font-size: 24px;
   font-weight: 700;
-  color: #ffffff;
+  color: black;
   margin: 0;
   display: flex;
   align-items: center;
@@ -17,7 +17,7 @@
 }
 
 .count {
-  background: #3b82f6;
+  background: #ff971d;
   color: white;
   font-size: 14px;
   font-weight: 600;
@@ -44,22 +44,22 @@
 .searchInput {
   width: 100%;
   padding: 12px 16px 12px 44px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #ffe8d6;
   border-radius: 8px;
   font-size: 14px;
-  color: #ffffff;
-  background: #2e2e33;
+  color: black;
+  background: white;
   transition: all 0.2s ease;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #ff971d;
+  box-shadow: 0 0 0 3px rgba(255, 151, 29, 0.1);
 }
 
 .searchInput::placeholder {
-  color: #9ca3af;
+  color: #a0aec0;
 }
 
 .searchIcon {
@@ -68,7 +68,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 16px;
-  color: #9ca3af;
+  color: #a0aec0;
 }
 
 .filterButtons {
@@ -78,9 +78,9 @@
 
 .filterButton {
   padding: 8px 16px;
-  border: 1px solid #e2e8f0;
-  background: #111116;
-  color: #ffffff;
+  border: 1px solid #ffe8d6;
+  background: white;
+  color: black;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
@@ -93,14 +93,14 @@
 }
 
 .filterButton:hover {
-  border-color: #cbd5e1;
-  background: #2e2e33;
+  border-color: #ff971d;
+  background: #f9f6f7;
 }
 
 .filterButton.active {
-  background: #3b82f6;
+  background: #ff971d;
   color: white;
-  border-color: #3b82f6;
+  border-color: #ff971d;
 }
 
 .filterIcon {

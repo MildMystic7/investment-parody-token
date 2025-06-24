@@ -4,7 +4,6 @@ import NewLoginPage from "./pages/NewLoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import CouncilPage from "./pages/CouncilPage";
 import PortfolioPage from "./pages/PortfolioPage";
-import PerformancePage from "./pages/PerformancePage";
 import SettingsPage from "./pages/SettingsPage";
 
 import OakCoinPage from "./pages/OakCoinPage";
@@ -18,7 +17,7 @@ function PageLayout({ children }) {
       style={{
         paddingTop: "64px",
         minHeight: "100vh",
-        background: "#000000",
+        background: "#ffffff",
         display: "flex",
         flexDirection: "column",
       }}
@@ -65,14 +64,6 @@ export const router = createBrowserRouter([
     element: (
       <PageLayout>
         <PortfolioPage />
-      </PageLayout>
-    ),
-  },
-  {
-    path: "/performance",
-    element: (
-      <PageLayout>
-        <PerformancePage />
       </PageLayout>
     ),
   },

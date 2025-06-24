@@ -165,17 +165,26 @@ const MemesComponent = () => {
         <div className={styles.tableHeader}>
           <div className={styles.tableCell}>#</div>
           <div className={styles.tableCell}>Name</div>
+          <div className={styles.tableCell}></div> {/* Empty for button */}
           <div className={styles.tableCell}>Price</div>
-          <div className={styles.tableCell}>1h %</div>
-          <div className={styles.tableCell}>24h %</div>
-          <div className={styles.tableCell}>7d %</div>
-          <div className={styles.tableCell}>Market Cap 💡</div>
-          <div className={styles.tableCell}>Vote</div>
+          <div className={`${styles.tableCell} ${styles.hideOnMobile}`}>
+            1h %
+          </div>
+          <div className={`${styles.tableCell} ${styles.hideOnMobile}`}>
+            24h %
+          </div>
+          <div className={`${styles.tableCell} ${styles.hideOnMobile}`}>
+            7d %
+          </div>
+          <div className={`${styles.tableCell} ${styles.hideOnMobile}`}>
+            Market Cap 💡
+          </div>
         </div>
 
         {memecoinsData.map((coin) => (
           <div key={coin.rank} className={styles.tableRow}>
             <div className={styles.tableCell}>
+              <span className={styles.star}>☆</span>
               <span className={styles.rank}>{coin.rank}</span>
             </div>
             <div className={styles.tableCell}>
@@ -198,9 +207,12 @@ const MemesComponent = () => {
               </div>
             </div>
             <div className={styles.tableCell}>
-              <span className={styles.price}>{coin.price}</span>
+              <button className={styles.buyButton}>Buy</button>
             </div>
             <div className={styles.tableCell}>
+              <span className={styles.price}>{coin.price}</span>
+            </div>
+            <div className={`${styles.tableCell} ${styles.hideOnMobile}`}>
               <span
                 className={`${styles.change} ${
                   coin.isNegative1h ? styles.negative : styles.positive
@@ -209,7 +221,7 @@ const MemesComponent = () => {
                 {coin.change1h}
               </span>
             </div>
-            <div className={styles.tableCell}>
+            <div className={`${styles.tableCell} ${styles.hideOnMobile}`}>
               <span
                 className={`${styles.change} ${
                   coin.isNegative24h ? styles.negative : styles.positive
@@ -218,7 +230,7 @@ const MemesComponent = () => {
                 {coin.change24h}
               </span>
             </div>
-            <div className={styles.tableCell}>
+            <div className={`${styles.tableCell} ${styles.hideOnMobile}`}>
               <span
                 className={`${styles.change} ${
                   coin.isNegative7d ? styles.negative : styles.positive
@@ -227,13 +239,8 @@ const MemesComponent = () => {
                 {coin.change7d}
               </span>
             </div>
-            <div className={styles.tableCell}>
+            <div className={`${styles.tableCell} ${styles.hideOnMobile}`}>
               <span className={styles.marketCap}>{coin.marketCap}</span>
-            </div>
-            <div className={styles.tableCell}>
-              <button className={styles.buyButton}>
-                <a href="/council">Vote</a>
-              </button>
             </div>
           </div>
         ))}

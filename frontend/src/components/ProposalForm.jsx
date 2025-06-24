@@ -90,7 +90,15 @@ function ProposalForm() {
           />
         </div>
 
-        <Button variant="outline" className="">
+        <Button
+          variant="outline"
+          className=""
+          style={{
+            backgroundColor: "#FF971D",
+            color: "white",
+            border: "none",
+          }}
+        >
           ↗ Submit Proposal
         </Button>
       </form>

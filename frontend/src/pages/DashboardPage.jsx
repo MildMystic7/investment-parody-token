@@ -85,12 +85,14 @@ function DashboardPage() {
   const words = `The first community driven hedge fund.`;
   const words2 = `We make dumb money, intelligently.`;
   return (
-    <div className="flex flex-col bg-black">
+    <div className="flex flex-col bg-white">
       <ContainerScroll
         titleComponent={
           <div className="mb-20">
-            <h1 className="text-4xl font-semibold text-white">{words}</h1>
-            <p className="text-lg text-white mt-2">{words2}</p>
+            <h1 className="text-2xl md:text-4xl font-semibold text-black">
+              {words}
+            </h1>
+            <p className="text-md md:text-lg text-black mt-2">{words2}</p>
           </div>
         }
       >
@@ -121,16 +123,16 @@ function DashboardPage() {
           </div>
           <div className="space-y-8 max-h-[400px] overflow-y-auto">
             {/* Elon Musk Tweet */}
-            <div className="bg-[#111116] text-white rounded-xl p-6 border border-gray-800 hover:border-gray-600 transition-colors">
+            <div className="bg-white text-black rounded-xl p-6 border border-[#FFE8D6] hover:border-[#FF971D] transition-colors">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-sm font-bold">
+                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-sm font-bold">
                   EM
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="font-bold">Elon Musk</span>
                     <svg
-                      className="w-4 h-4 text-blue-400"
+                      className="w-4 h-4 text-[#FF971D]"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -140,21 +142,19 @@ function DashboardPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="text-gray-400 text-sm">
-                      @elonmusk · 14h
-                    </span>
+                    <span className="text-black text-sm">@elonmusk · 14h</span>
                   </div>
                   <div className="text-sm leading-relaxed">
                     <p className="mb-2">Time to drop the really big bomb:</p>
                     <p className="mb-2">
-                      <span className="text-blue-400">@realDonaldTrump</span> is
-                      in the Epstein files. That is the real reason they have
+                      <span className="text-[#FF971D]">@realDonaldTrump</span>{" "}
+                      is in the Epstein files. That is the real reason they have
                       not been made public.
                     </p>
                     <p>Have a nice day, DJT!</p>
                   </div>
-                  <div className="flex items-center gap-6 mt-3 text-gray-400 text-sm">
-                    <div className="flex items-center gap-1 hover:text-blue-400 cursor-pointer">
+                  <div className="flex items-center gap-6 mt-3 text-black text-sm">
+                    <div className="flex items-center gap-1 hover:text-[#FF971D] cursor-pointer">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -170,7 +170,7 @@ function DashboardPage() {
                       </svg>
                       <span>146K</span>
                     </div>
-                    <div className="flex items-center gap-1 hover:text-green-400 cursor-pointer">
+                    <div className="flex items-center gap-1 hover:text-[#FF971D] cursor-pointer">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -186,7 +186,7 @@ function DashboardPage() {
                       </svg>
                       <span>308K</span>
                     </div>
-                    <div className="flex items-center gap-1 hover:text-red-400 cursor-pointer">
+                    <div className="flex items-center gap-1 hover:text-red-500 cursor-pointer">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -208,29 +208,29 @@ function DashboardPage() {
             </div>
 
             {/* BONK Tweet */}
-            <div className="bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-400 transition-colors">
+            <div className="bg-white border border-[#FFE8D6] rounded-xl p-6 hover:border-[#FF971D] transition-colors">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-sm font-bold text-black">
                   B
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="font-bold text-gray-900">BONK</span>
-                    <span className="text-gray-500 text-sm">
+                    <span className="font-bold text-black">BONK</span>
+                    <span className="text-black text-sm">
                       @bonk_inu · May 30
                     </span>
                   </div>
-                  <div className="text-sm leading-relaxed text-gray-800">
+                  <div className="text-sm leading-relaxed text-black">
                     <p className="mb-2">
                       Fun Fact: You can copy your favorite trader aping{" "}
-                      <span className="text-blue-500">@bonk_fun</span> coins on{" "}
-                      <span className="text-blue-500">@pp_trading</span> and
+                      <span className="text-[#FF971D]">@bonk_fun</span> coins on{" "}
+                      <span className="text-[#FF971D]">@pp_trading</span> and
                       make money with them
                     </p>
                     <p>Here's a link to get started 👇</p>
                   </div>
-                  <div className="flex items-center gap-6 mt-3 text-gray-500 text-sm">
-                    <div className="flex items-center gap-1 hover:text-gray-700 cursor-pointer">
+                  <div className="flex items-center gap-6 mt-3 text-black text-sm">
+                    <div className="flex items-center gap-1 hover:text-[#FF971D] cursor-pointer">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -246,7 +246,7 @@ function DashboardPage() {
                       </svg>
                       <span>33</span>
                     </div>
-                    <div className="flex items-center gap-1 hover:text-gray-700 cursor-pointer">
+                    <div className="flex items-center gap-1 hover:text-[#FF971D] cursor-pointer">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -262,7 +262,7 @@ function DashboardPage() {
                       </svg>
                       <span>24</span>
                     </div>
-                    <div className="flex items-center gap-1 hover:text-gray-700 cursor-pointer">
+                    <div className="flex items-center gap-1 hover:text-red-500 cursor-pointer">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -284,15 +284,15 @@ function DashboardPage() {
             </div>
 
             {/* Fartcoin Tweet */}
-            <div className="bg-[#111116] text-white rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+            <div className="bg-white text-black rounded-xl p-6 border border-[#FFE8D6] hover:border-[#FF971D] transition-colors">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-sm font-bold">
+                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-sm font-bold">
                   F
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="font-bold">Fartcoin</span>
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-black text-sm">
                       @FartCoinOfSOL · 1h
                     </span>
                   </div>
@@ -301,16 +301,16 @@ function DashboardPage() {
                   </div>
 
                   {/* Quoted Tweet */}
-                  <div className="border border-gray-700 rounded-lg p-3 bg-gray-800">
+                  <div className="border border-[#FFE8D6] rounded-lg p-3 bg-[#F9F6F7]">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-6 h-6 bg-gray-500 rounded-full flex items-center justify-center text-xs font-bold">
+                      <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center text-xs font-bold">
                         C
                       </div>
                       <span className="font-semibold text-sm">
                         Coinbase Traders
                       </span>
                       <svg
-                        className="w-3 h-3 text-blue-400"
+                        className="w-3 h-3 text-[#FF971D]"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -320,17 +320,17 @@ function DashboardPage() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="text-gray-400 text-sm">
+                      <span className="text-black text-sm">
                         @coinbasetraders · 11h
                       </span>
                     </div>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-sm text-black">
                       Hot air rises x.com/coinbaseassets...
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-6 mt-3 text-gray-400 text-sm">
-                    <div className="flex items-center gap-1 hover:text-blue-400 cursor-pointer">
+                  <div className="flex items-center gap-6 mt-3 text-black text-sm">
+                    <div className="flex items-center gap-1 hover:text-[#FF971D] cursor-pointer">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -346,7 +346,7 @@ function DashboardPage() {
                       </svg>
                       <span>19</span>
                     </div>
-                    <div className="flex items-center gap-1 hover:text-green-400 cursor-pointer">
+                    <div className="flex items-center gap-1 hover:text-[#FF971D] cursor-pointer">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -362,7 +362,7 @@ function DashboardPage() {
                       </svg>
                       <span>11</span>
                     </div>
-                    <div className="flex items-center gap-1 hover:text-red-400 cursor-pointer">
+                    <div className="flex items-center gap-1 hover:text-red-500 cursor-pointer">
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -397,42 +397,42 @@ function DashboardPage() {
               />
               <div>
                 <h3 className="text-xl font-bold">Welcome, @Deathzu_</h3>
-                <p className="text-gray-600">X Followers: 1,247</p>
+                <p className="text-black">X Followers: 1,247</p>
               </div>
             </div>
 
             <div className={styles.userStats}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg text-center">
+                <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
                   <h4 className="font-semibold text-lg">Active Votes</h4>
-                  <p className="text-2xl font-bold text-blue-600">2</p>
-                  <div className="text-sm text-gray-600 mt-1">
-                    <span className="bg-green-100 px-2 py-1 rounded mr-1">
+                  <p className="text-2xl font-bold text-black">2</p>
+                  <div className="text-sm text-black mt-1">
+                    <span className="bg-[#FFE8D6] px-2 py-1 rounded mr-1">
                       Bonk
                     </span>
-                    <span className="bg-red-100 px-2 py-1 rounded">
+                    <span className="bg-[#FFE8D6] px-2 py-1 rounded">
                       Fartcoin
                     </span>
                   </div>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg text-center">
+                <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
                   <h4 className="font-semibold text-lg">Total Votes</h4>
-                  <p className="text-2xl font-bold text-green-600">12</p>
-                  <p className="text-sm text-gray-600">All time</p>
+                  <p className="text-2xl font-bold text-black">12</p>
+                  <p className="text-sm text-black">All time</p>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg text-center">
+                <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
                   <h4 className="font-semibold text-lg">Rank</h4>
-                  <p className="text-2xl font-bold text-purple-600">#47</p>
-                  <p className="text-sm text-gray-600">Community</p>
+                  <p className="text-2xl font-bold text-black">#47</p>
+                  <p className="text-sm text-black">Community</p>
                 </div>
               </div>
             </div>
 
             {user && (
-              <div className="mt-4 p-3 bg-yellow-100 rounded-lg">
-                <p className="text-sm text-yellow-800">
+              <div className="mt-4 p-3 bg-[#FFE8D6] rounded-lg">
+                <p className="text-sm text-black">
                   <strong>Dev Mode:</strong> {user.username} ({user.email})
                 </p>
               </div>

@@ -1,6 +1,6 @@
 .footer {
-  background: #000000;
-  color: #e5e7eb;
+  background: white;
+  color: black;
   font-family: var(--font-primary);
   margin-top: auto;
 }
@@ -17,7 +17,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 80px;
   padding: 60px 0;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid #ffe8d6;
 }
 
 .contactSection {
@@ -34,7 +34,7 @@
   font-family: var(--font-primary);
   font-size: 32px;
   font-weight: 700;
-  color: white;
+  color: black;
   margin: 0 0 24px 0;
   line-height: 1.2;
 }
@@ -42,19 +42,19 @@
 .contactText {
   font-family: var(--font-primary);
   font-size: 16px;
-  color: #9ca3af;
+  color: black;
   line-height: 1.6;
   margin: 0 0 32px 0;
 }
 
 .emailLink {
-  color: white;
+  color: black;
   text-decoration: underline;
   font-family: var(--font-primary);
 }
 
 .emailLink:hover {
-  color: #ffffff;
+  color: #ff971d;
 }
 
 .socialLinks {
@@ -88,7 +88,7 @@
 .newsletterDescription {
   font-family: var(--font-primary);
   font-size: 16px;
-  color: #9ca3af;
+  color: black;
   line-height: 1.6;
   margin: 0 0 32px 0;
 }
@@ -106,10 +106,10 @@
 .emailInput {
   flex: 1;
   padding: 16px 20px;
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
+  background: white;
+  border: 1px solid #ffe8d6;
   border-radius: 12px;
-  color: white;
+  color: black;
   font-family: var(--font-primary);
   font-size: 16px;
   outline: none;
@@ -117,18 +117,18 @@
 }
 
 .emailInput:focus {
-  border-color: #525252;
+  border-color: #ff971d;
 }
 
 .emailInput::placeholder {
-  color: #9ca3af;
+  color: #a0aec0;
   font-family: var(--font-primary);
 }
 
 .submitButton {
-  background: transparent;
+  background: #ff971d;
   color: white;
-  border: 1px solid #2a2a2a;
+  border: 1px solid #ff971d;
   padding: 16px 24px;
   border-radius: 12px;
   font-family: var(--font-primary);
@@ -140,13 +140,14 @@
 }
 
 .submitButton:hover {
-  background: transparent;
-  border-color: #525252;
+  background: #ff971d;
+  opacity: 0.8;
+  border-color: #ff971d;
 }
 
 .privacyText {
   font-size: 12px;
-  color: #6b7280;
+  color: black;
   line-height: 1.5;
 }
 
@@ -156,13 +157,13 @@
 }
 
 .privacyLink {
-  color: #9ca3af;
+  color: black;
   text-decoration: underline;
   font-family: var(--font-primary);
 }
 
 .privacyLink:hover {
-  color: white;
+  color: #ff971d;
 }
 
 /* Bottom Section - Links */
@@ -186,7 +187,7 @@
   font-family: var(--font-primary);
   font-size: 20px;
   font-weight: 700;
-  color: white;
+  color: black;
   letter-spacing: 2px;
 }
 
@@ -213,7 +214,7 @@
 
 .companyInfo {
   font-size: 12px;
-  color: rgb(255, 255, 255);
+  color: black;
   line-height: 1.5;
 }
 
@@ -232,7 +233,7 @@
   font-family: var(--font-primary);
   font-size: 16px;
   font-weight: 600;
-  color: white;
+  color: black;
   margin: 0 0 16px 0;
 }
 
@@ -248,13 +249,13 @@
 .link {
   font-family: var(--font-primary);
   font-size: 14px;
-  color: #9ca3af;
+  color: black;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .link:hover {
-  color: white;
+  color: #ff971d;
 }
 
 /* Responsive Design */
@@ -299,10 +300,7 @@
 }
 
 .separator {
-  margin-top: 30px;
   border: none;
-  height: 1px;
-  background-color: #333;
-  max-width: 1150px;
-  margin-left: 140px;
+  border-top: 1px solid #ffe8d6;
+  margin: 0;
 }

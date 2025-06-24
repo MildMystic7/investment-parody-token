@@ -75,13 +75,13 @@ const chartData = [
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="p-4 bg-[#111116] flex flex-col gap-4 rounded-md border border-gray-700">
-        <div className="text-medium text-lg text-white">{label}</div>
-        <div className="text-sm text-white">
+      <div className="p-4 bg-white flex flex-col gap-4 rounded-md border border-[#FFE8D6]">
+        <div className="text-medium text-lg text-black">{label}</div>
+        <div className="text-sm text-black">
           Bonk:
           <span className="ml-2">${payload[0].value}</span>
         </div>
-        <div className="text-sm text-white">
+        <div className="text-sm text-black">
           Fartcoin:
           <span className="ml-2">${payload[1].value}</span>
         </div>
@@ -115,11 +115,11 @@ export function ChartAreaInteractive() {
   const filteredData = getFilteredData();
 
   return (
-    <div className="bg-[#111116] p-8 rounded-2xl text-white max-w-[1600px] mx-auto w-full">
+    <div className="bg-[#F9F6F7] p-8 rounded-2xl text-black max-w-[1600px] mx-auto w-full">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h3 className="text-2xl font-bold text-white">Performance Chart</h3>
-          <p className="text-white text-md mt-2">
+          <h3 className="text-2xl font-bold text-black">Performance Chart</h3>
+          <p className="text-black text-md mt-2">
             Showing total portfolio value for the last{" "}
             {timeRange === "30d"
               ? "30 days"
@@ -129,7 +129,7 @@ export function ChartAreaInteractive() {
           </p>
         </div>
         <select
-          className="bg-[#2e2e33] text-white px-4 py-2 border border-gray-600 rounded-lg text-sm"
+          className="bg-white text-black px-4 py-2 border border-[#FFE8D6] rounded-lg text-sm"
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
         >
@@ -145,8 +145,8 @@ export function ChartAreaInteractive() {
         >
           <defs>
             <linearGradient id="colorBonk" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#f97316" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+              <stop offset="5%" stopColor="#FF971D" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#FF971D" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="colorFartcoin" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#6b7280" stopOpacity={0.8} />
@@ -157,7 +157,7 @@ export function ChartAreaInteractive() {
             dataKey="date"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#fff", fontSize: 14 }}
+            tick={{ fill: "black", fontSize: 14 }}
             tickMargin={20}
             minTickGap={30}
             tickFormatter={(str) => {
@@ -168,18 +168,15 @@ export function ChartAreaInteractive() {
               });
             }}
           />
-          <CartesianGrid
-            strokeDasharray="3 3"
-            stroke="rgba(255, 255, 255, 0.15)"
-          />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 0, 0, 0.1)" />
           <Tooltip
             content={<CustomTooltip />}
-            cursor={{ fill: "rgba(255, 255, 255, 0.1)" }}
+            cursor={{ fill: "rgba(0, 0, 0, 0.05)" }}
           />
           <Area
             type="monotone"
             dataKey="bonk"
-            stroke="#f97316"
+            stroke="#FF971D"
             strokeWidth={2}
             fillOpacity={1}
             fill="url(#colorBonk)"
@@ -198,12 +195,12 @@ export function ChartAreaInteractive() {
       </ResponsiveContainer>
       <div className="flex justify-center items-center gap-8 mt-8">
         <div className="flex items-center gap-3">
-          <div className="w-4 h-4 rounded-full bg-orange-500"></div>
-          <span className="text-md text-white">Bonk</span>
+          <div className="w-4 h-4 rounded-full bg-[#FF971D]"></div>
+          <span className="text-md text-black">Bonk</span>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-4 h-4 rounded-full bg-gray-500"></div>
-          <span className="text-md text-white">Fartcoin</span>
+          <span className="text-md text-black">Fartcoin</span>
         </div>
       </div>
     </div>

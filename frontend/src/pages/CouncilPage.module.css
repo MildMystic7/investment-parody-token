@@ -17,13 +17,13 @@
 .pageHeader h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #ffffff;
+  color: black;
   margin: 0 0 8px 0;
 }
 
 .pageHeader p {
   font-size: 18px;
-  color: #ffffff;
+  color: black;
   margin: 0;
   line-height: 1.6;
 }
@@ -38,14 +38,14 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 60px 20px;
-  background: #111116;
+  background: #f9f6f7;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ffe8d6;
 }
 
 .noResults p {
   font-size: 16px;
-  color: #ffffff;
+  color: black;
   margin: 0;
 }
 
@@ -82,14 +82,14 @@
 }
 
 .header h1 {
-  color: #1e293b;
+  color: black;
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 8px;
 }
 
 .header p {
-  color: #64748b;
+  color: black;
   font-size: 16px;
 }
 
@@ -99,7 +99,7 @@
 }
 
 .comingSoon {
-  background: #111116;
+  background: #f9f6f7;
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -108,14 +108,14 @@
 }
 
 .comingSoon h2 {
-  color: #ffffff;
+  color: black;
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 16px;
 }
 
 .comingSoon p {
-  color: #ffffff;
+  color: black;
   font-size: 16px;
   line-height: 1.6;
   margin-bottom: 30px;
@@ -123,14 +123,14 @@
 
 .features {
   text-align: left;
-  background: #111116;
+  background: #f9f6f7;
   padding: 24px;
   border-radius: 8px;
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid #ff971d;
 }
 
 .features h3 {
-  color: #ffffff;
+  color: black;
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
@@ -142,7 +142,7 @@
 }
 
 .features li {
-  color: #ffffff;
+  color: black;
   padding: 8px 0;
   position: relative;
   padding-left: 20px;
@@ -150,7 +150,7 @@
 
 .features li::before {
   content: "•";
-  color: #3b82f6;
+  color: #ff971d;
   position: absolute;
   left: 0;
   font-weight: bold;
