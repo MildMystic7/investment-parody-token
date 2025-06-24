@@ -18,34 +18,26 @@ export async function votar(id, opcao) {
   const votacao = await Votacao.findByPk(id);
   if (!votacao) throw new Error('Votação não encontrada.');
 
-  // Criar cópia do objeto para alteração
   const opcoes = { ...(votacao.opcoes || {}) };
 
-  if (!(opcao in opcoes)) {
+  if (!opcoes[opcao]) {
     opcoes[opcao] = { contagem: 0 };
   }
 
-  opcoes[opcao].contagem++;
+  opcoes[opcao].contagem += 1;
 
-  // Usa setDataValue para garantir detecção de mudança
-  votacao.setDataValue('opcoes', opcoes);
+  // Atualiza no banco
+  await Votacao.update(
+    { opcoes: JSON.parse(JSON.stringify(opcoes)) },
+    { where: { id } }
+  );
 
-  // Verificar se o Sequelize detecta a mudança
-  if (!votacao.changed('opcoes')) {
-    // Se não detectar, força update manualmente
-    await Votacao.update(
-      { opcoes },
-      { where: { id } }
-    );
-  } else {
-    await votacao.save();
-  }
-
-  // Opcional: reload para ter certeza da atualização
+  // Recarrega para ter certeza
   await votacao.reload();
 
   return votacao;
 }
+
 
 // Listar todas as votações com opções e contagens
 export async function listarVotacoes() {

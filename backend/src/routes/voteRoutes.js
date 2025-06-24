@@ -4,14 +4,14 @@ import { criarVotacao, votar, listarVotacoes } from '../utils/voteStorage.js';
 const router = express.Router();
 
 // Criar votação
-router.post('/criarvotacao', async (req, res) => {
-  const { id, opcoes } = req.body;
-  if (!id || !Array.isArray(opcoes)) {
+router.post('/createvote', async (req, res) => {
+  const { id } = req.body;
+  if (!id ) {
     return res.status(400).json({ erro: 'ID ou opções inválidas.' });
   }
 
   try {
-    await criarVotacao(id, opcoes);
+    await criarVotacao(id, []);
     res.status(201).json({ mensagem: 'Votação criada com sucesso.' });
   } catch (err) {
     res.status(400).json({ erro: err.message });
@@ -29,15 +29,16 @@ router.get('/getall', async (req, res) => {
 });
 
 // Adicionar voto a uma opção (incrementar)
-router.post('/:id/opcao', async (req, res) => {
-  const { id } = req.params;
+router.post('/', async (req, res) => {
+  const { id } = req.body;
   const { opcao } = req.body;
 
   if (!opcao || typeof opcao !== 'string') {
-    return res.status(400).json({ erro: 'Opção inválida' });
+    return res.status(400).json({ erro: 'Opção inválida'});
   }
 
   try {
+    console.log(id);
     const votacao = await votar(id, opcao);
     res.status(201).json({ mensagem: 'Voto adicionado', opcoes: Object.keys(votacao.opcoes) });
   } catch (err) {
