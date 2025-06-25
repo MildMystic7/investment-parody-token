@@ -18,11 +18,7 @@ router.get('/getInfoWallet', async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        data: {
-          wallet: result.data.wallet,
-          tokens: result.data.tokens,              // Array com os tokens (inclui SOL)
-          totalValueUsd: result.data.solValueUsd
-        }
+        data: result.data
       });
     } else {
       logger.warn(`Erro ao obter info da wallet: ${result.error}`);

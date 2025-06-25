@@ -29,6 +29,25 @@ async function fetchTokenInfoByContract(ca) {
 
 export async function getSolanaPortfolio(walletAddress) {
   try {
+    // Get SOL balance
+    const balanceResponse = await axios.post(RPC_URL, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'getBalance',
+      params: [walletAddress],
+    });
+    
+    const solBalance = balanceResponse.data.result.value / 1000000000; // Convert lamports to SOL
+    
+    // Get SOL price from CoinGecko
+    let solPriceUsd = 0;
+    try {
+      const solPriceResponse = await axios.get(`${COINGECKO_API}/simple/price?ids=solana&vs_currencies=usd`);
+      solPriceUsd = solPriceResponse.data.solana?.usd || 0;
+    } catch (priceErr) {
+      console.log('Could not fetch SOL price:', priceErr.message);
+    }
+
     const tokensResponse = await axios.post(RPC_URL, {
       jsonrpc: '2.0',
       id: 1,
@@ -42,6 +61,18 @@ export async function getSolanaPortfolio(walletAddress) {
     const tokenAccounts = tokensResponse.data.result.value;
 
     const tokens = [];
+    let totalValueUsd = solBalance * solPriceUsd; // Start with SOL value
+
+    // Add SOL as the first token
+    tokens.push({
+      mint: 'So11111111111111111111111111111111111111112', // SOL mint address
+      amount: solBalance,
+      ca: 'So11111111111111111111111111111111111111112',
+      name: 'Solana',
+      symbol: 'SOL',
+      priceUsd: solPriceUsd,
+      icon: 'https://assets.coingecko.com/coins/images/4128/thumb/solana.png',
+    });
 
     for (const account of tokenAccounts) {
       const info = account.account.data.parsed.info;
@@ -56,13 +87,16 @@ export async function getSolanaPortfolio(walletAddress) {
       // Ignorar tokens com info null (inclui rate limit)
       if (!cgInfo) continue;
 
+      const priceUsd = cgInfo.market_data?.current_price?.usd || 0;
+      totalValueUsd += amount * priceUsd;
+
       tokens.push({
         mint,
         amount,
         ca,
         name: cgInfo.name || null,
         symbol: cgInfo.symbol?.toUpperCase() || null,
-        priceUsd: cgInfo.market_data?.current_price?.usd || 0,
+        priceUsd,
         icon: cgInfo.image?.thumb || null,
       });
     }
@@ -71,7 +105,10 @@ export async function getSolanaPortfolio(walletAddress) {
       success: true,
       data: {
         wallet: walletAddress,
+        balance: solBalance, // Add balance field that frontend expects
         tokens,
+        totalValueUsd,
+        solValueUsd: solBalance * solPriceUsd
       },
     };
   } catch (err) {

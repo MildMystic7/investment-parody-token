@@ -1,10 +1,19 @@
-export const PORT     = 3000;                                               // Define aqui a porta que quiseres
-export const HOST     = 'localhost';                                        // Define o host (ex: localhost, 0.0.0.0, IP)
-export const ENV      = 'dev';                                              // Ambiente: dev ou prod
-export const WALLET   = 'Ggfa9P8UkD2tMDQ9Xmn4uPFZTWR1Fp4qiSrsdpGsQwAp';    // Ambiente: dev ou prod
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+export const PORT = process.env.PORT || 3001;
+export const HOST = process.env.HOST || 'localhost';
+export const ENV = process.env.ENV || 'dev';
+export const WALLET = process.env.WALLET || 'Ggfa9P8UkD2tMDQ9Xmn4uPFZTWR1Fp4qiSrsdpGsQwAp';
 
 export const RPC_URLS = {
-  dev:   'https://api.devnet.solana.com',
-  prod:  'https://api.mainnet-beta.solana.com',
+  dev: 'https://api.devnet.solana.com',
+  prod: 'https://api.mainnet-beta.solana.com',
 };
 
+export const TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY;
+export const TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET;
+export const SESSION_SECRET = process.env.SESSION_SECRET || 'default_session_secret';
+export const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret';
+export const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'; 
