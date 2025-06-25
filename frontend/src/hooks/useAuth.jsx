@@ -31,6 +31,18 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const loginWithTwitter = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await authService.loginWithTwitter();
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+      throw err;
+    }
+  };
+
   const logout = async () => {
     setIsLoading(true);
     try {
@@ -49,6 +61,7 @@ export function AuthProvider({ children }) {
     error,
     isAuthenticated: !!user,
     loginDevelopmentMode,
+    loginWithTwitter,
     logout,
   };
 

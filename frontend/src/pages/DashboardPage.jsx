@@ -19,7 +19,7 @@ function DashboardPage() {
     const fetchWalletBalance = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/wallet/getInfoWallet"
+          "http://localhost:3001/api/wallet/getInfoWallet"
         );
 
         if (!response.ok) {
@@ -391,13 +391,17 @@ function DashboardPage() {
           <div className={styles.welcomeCard}>
             <div className="flex items-center gap-4 mb-4">
               <img
-                src={profilePicture}
+                src={user?.photo || profilePicture}
                 alt="Profile"
                 className="w-16 h-16 rounded-full object-cover"
               />
               <div>
-                <h3 className="text-xl font-bold">Welcome, @Deathzu_</h3>
-                <p className="text-black">X Followers: 1,247</p>
+                <h3 className="text-xl font-bold">
+                  Welcome, @{user?.username || "Guest"}
+                </h3>
+                <p className="text-black">
+                  X Followers: {user?.followersCount?.toLocaleString() || "N/A"}
+                </p>
               </div>
             </div>
 

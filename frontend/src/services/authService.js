@@ -27,9 +27,10 @@ class AuthService {
     return mockUser;
   }
 
-  // Twitter OAuth login (future implementation)
+  // Twitter OAuth login
   async loginWithTwitter() {
-    throw new Error('Twitter authentication not yet implemented');
+    // This will redirect the browser to our backend, which then redirects to Twitter
+    window.location.href = `${this.baseURL}/auth/twitter`;
   }
 
   // Logout
@@ -49,6 +50,26 @@ class AuthService {
   getCurrentUser() {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
+  }
+
+  // This will be called from our /auth/callback page after successful X login
+  receiveTwitterAuth() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const userString = params.get("user");
+
+    if (token && userString) {
+      try {
+        const user = JSON.parse(decodeURIComponent(userString));
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        return user;
+      } catch (error) {
+        console.error("Failed to parse user data from URL", error);
+        return null;
+      }
+    }
+    return null;
   }
 }
 

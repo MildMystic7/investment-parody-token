@@ -1,11 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { AuroraBackground } from "../components/ui/aurora-background";
+import { useAuth } from "../hooks/useAuth";
 
 function NewLoginPage() {
   const navigate = useNavigate();
+  const { loginDevelopmentMode, loginWithTwitter } = useAuth();
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
+    // For development, we can still use the mock login
+    await loginDevelopmentMode();
     navigate("/dashboard");
+  };
+
+  const handleLoginWithX = async () => {
+    // This will redirect the user
+    await loginWithTwitter();
   };
 
   return (
@@ -32,20 +41,20 @@ function NewLoginPage() {
             className="px-6 py-2 bg-[#FF971D] text-white rounded-full font-medium cursor-pointer"
             onClick={handleContinue}
           >
-            Start Trading
+            Start Trading (Dev)
           </button>
 
           <button
-            className="px-4 py-2 rounded-full border border-white/20 text-white/50 flex cursor-not-allowed items-center gap-2"
-            disabled
+            className="px-4 py-2 rounded-full border border-white/20 text-white bg-black flex items-center gap-2 cursor-pointer"
+            onClick={handleLoginWithX}
           >
             <span className="text-lg">𝕏</span>
-            Continue with X (Coming Soon)
+            Continue with X
           </button>
         </div>
 
         <p className="mt-8 text-xs text-neutral-500">
-          Development Mode - Twitter auth will be implemented later
+          Select a login method to continue.
         </p>
       </div>
     </AuroraBackground>

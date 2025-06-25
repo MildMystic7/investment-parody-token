@@ -6,11 +6,16 @@ import NewLoginPage from "./pages/NewLoginPage";
 import OakCoinPage from "./pages/OakCoinPage";
 import PortfolioPage from "./pages/PortfolioPage";
 import SettingsPage from "./pages/SettingsPage";
+import AuthCallbackPage from "./pages/AuthCallbackPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <NewLoginPage />,
+  },
+  {
+    path: "/auth/callback",
+    element: <AuthCallbackPage />,
   },
   {
     element: <App />,
