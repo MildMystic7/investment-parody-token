@@ -1,24 +1,24 @@
-import { useState, useEffect } from 'react';
-import { authService } from '../services/authService';
+import { useState, useEffect, createContext, useContext } from "react";
+import { authService } from "../services/authService";
 
-export function useAuth() {
+const AuthContext = createContext();
+
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Check authentication status on mount
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
     if (currentUser) {
       setUser(currentUser);
     }
+    setIsLoading(false);
   }, []);
 
-  // Development mode login
   const loginDevelopmentMode = async () => {
     setIsLoading(true);
     setError(null);
-    
     try {
       const userData = await authService.loginDevelopmentMode();
       setUser(userData);
@@ -31,12 +31,6 @@ export function useAuth() {
     }
   };
 
-  // Twitter login (future)
-  const loginWithTwitter = async () => {
-    setError('Twitter authentication coming soon');
-  };
-
-  // Logout
   const logout = async () => {
     setIsLoading(true);
     try {
@@ -49,13 +43,18 @@ export function useAuth() {
     }
   };
 
-  return {
+  const value = {
     user,
     isLoading,
     error,
     isAuthenticated: !!user,
     loginDevelopmentMode,
-    loginWithTwitter,
-    logout
+    logout,
   };
-} 
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
+}

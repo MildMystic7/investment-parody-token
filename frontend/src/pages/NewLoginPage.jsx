@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { AuroraBackground } from "../components/ui/aurora-background";
 
@@ -11,16 +10,7 @@ function NewLoginPage() {
 
   return (
     <AuroraBackground>
-      <motion.div
-        initial={{ opacity: 0.0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: 0.3,
-          duration: 0.8,
-          ease: "easeInOut",
-        }}
-        className="relative z-20 flex flex-col items-center justify-center h-full px-4 text-center"
-      >
+      <div className="relative z-20 flex flex-col items-center justify-center h-full px-4 text-center">
         <div className="text-3xl md:text-5xl font-bold text-white">
           STRATTON OAKMONT INC.
         </div>
@@ -39,14 +29,14 @@ function NewLoginPage() {
 
         <div className="mt-8 flex flex-col items-center gap-4">
           <button
-            className="px-6 py-2 bg-white text-black rounded-full font-medium"
+            className="px-6 py-2 bg-[#FF971D] text-white rounded-full font-medium cursor-pointer"
             onClick={handleContinue}
           >
             Start Trading
           </button>
 
           <button
-            className="px-4 py-2 rounded-full border border-white/40 text-white flex items-center gap-2"
+            className="px-4 py-2 rounded-full border border-white/20 text-white/50 flex cursor-not-allowed items-center gap-2"
             disabled
           >
             <span className="text-lg">𝕏</span>
@@ -57,7 +47,7 @@ function NewLoginPage() {
         <p className="mt-8 text-xs text-neutral-500">
           Development Mode - Twitter auth will be implemented later
         </p>
-      </motion.div>
+      </div>
     </AuroraBackground>
   );
 }

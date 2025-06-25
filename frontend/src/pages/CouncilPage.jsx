@@ -2,8 +2,12 @@ import ProposalForm from "../components/ProposalForm";
 import ProposalFilters from "../components/ProposalFilters";
 import ProposalCard from "../components/ProposalCard";
 import styles from "./CouncilPage.module.css";
+import { useLocation } from "react-router-dom";
 
 function CouncilPage() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const tokenName = searchParams.get("tokenName");
   // Fake proposal data matching the screenshot
   const allProposals = [
     {
@@ -58,7 +62,7 @@ function CouncilPage() {
       </div>
 
       {/* Proposal Form */}
-      <ProposalForm />
+      <ProposalForm initialTokenName={tokenName || ""} />
 
       {/* Filters */}
       <ProposalFilters activeCount={activeProposals.length} />

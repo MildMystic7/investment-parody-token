@@ -2,9 +2,9 @@ import { useState } from "react";
 import styles from "./ProposalForm.module.css";
 import { Button } from "@/components/ui/button";
 
-function ProposalForm() {
+function ProposalForm({ initialTokenName }) {
   const [formData, setFormData] = useState({
-    tokenName: "",
+    tokenName: initialTokenName || "",
     contractAddress: "",
     investmentThesis: "",
   });

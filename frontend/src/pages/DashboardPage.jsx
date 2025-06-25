@@ -1,4 +1,4 @@
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth.jsx";
 import StatsCard from "../components/StatsCard";
 import styles from "./DashboardPage.module.css";
 import { TextGenerateEffect } from "../components/ui/text-generate-effect";

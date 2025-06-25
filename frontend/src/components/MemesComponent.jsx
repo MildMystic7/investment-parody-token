@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styles from "./MemesComponent.module.css";
 
 const MemesComponent = () => {
@@ -207,7 +208,9 @@ const MemesComponent = () => {
               </div>
             </div>
             <div className={styles.tableCell}>
-              <button className={styles.buyButton}>Buy</button>
+              <Link to={`/council?tokenName=${encodeURIComponent(coin.name)}`}>
+                <button className={styles.buyButton}>Vote</button>
+              </Link>
             </div>
             <div className={styles.tableCell}>
               <span className={styles.price}>{coin.price}</span>
