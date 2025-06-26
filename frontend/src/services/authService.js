@@ -60,7 +60,7 @@ class AuthService {
 
     if (token && userString) {
       try {
-        const user = JSON.parse(decodeURIComponent(userString));
+        const user = JSON.parse(userString);
         localStorage.setItem("authToken", token);
         localStorage.setItem("user", JSON.stringify(user));
         return user;

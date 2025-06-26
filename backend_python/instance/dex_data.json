@@ -1,0 +1,78 @@
+[
+    {
+        "chainId": "solana",
+        "dexId": "raydium",
+        "url": "https://dexscreener.com/solana/9ndjdvdyqybdx7kbh3hvp47ocuafadueb8xp1erehmvx",
+        "pairAddress": "9ndJDvDYQyBDx7KBH3hvp47oCUafAdUEb8xP1ERehmVx",
+        "baseToken": {
+            "address": "fESbUKjuMY6jzDH9VP8cy4p3pu2q5W2rK2XghVfNseP",
+            "name": "CatFrogDogShark",
+            "symbol": "SOLANA"
+        },
+        "quoteToken": {
+            "address": "So11111111111111111111111111111111111111112",
+            "name": "Wrapped SOL",
+            "symbol": "SOL"
+        },
+        "priceNative": "0.0000005506",
+        "priceUsd": "0.00007648",
+        "txns": {
+            "m5": {
+                "buys": 0,
+                "sells": 0
+            },
+            "h1": {
+                "buys": 2,
+                "sells": 5
+            },
+            "h6": {
+                "buys": 16,
+                "sells": 9
+            },
+            "h24": {
+                "buys": 107,
+                "sells": 81
+            }
+        },
+        "volume": {
+            "h24": 4236.24,
+            "h6": 31.51,
+            "h1": 23.71,
+            "m5": 0
+        },
+        "priceChange": {
+            "h1": 0.16,
+            "h6": -1.76,
+            "h24": -2.12
+        },
+        "liquidity": {
+            "usd": 65625,
+            "base": 429538849,
+            "quote": 235.9614
+        },
+        "fdv": 73590,
+        "marketCap": 73590,
+        "pairCreatedAt": 1716914136000,
+        "info": {
+            "imageUrl": "https://dd.dexscreener.com/ds-data/tokens/solana/fESbUKjuMY6jzDH9VP8cy4p3pu2q5W2rK2XghVfNseP.png?key=43f513",
+            "header": "https://dd.dexscreener.com/ds-data/tokens/solana/fESbUKjuMY6jzDH9VP8cy4p3pu2q5W2rK2XghVfNseP/header.png?key=43f513",
+            "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/fESbUKjuMY6jzDH9VP8cy4p3pu2q5W2rK2XghVfNseP?timestamp=1750981800000",
+            "websites": [
+                {
+                    "label": "Website",
+                    "url": "https://catfrogdogshark.xyz/"
+                }
+            ],
+            "socials": [
+                {
+                    "type": "twitter",
+                    "url": "https://x.com/CatFrogDogShark"
+                },
+                {
+                    "type": "telegram",
+                    "url": "https://t.me/CatFrogDogShark"
+                }
+            ]
+        }
+    }
+]

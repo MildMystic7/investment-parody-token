@@ -1,12 +1,27 @@
 import { useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { Menu, MenuItem } from "./ui/navbar-menu";
 import { cn } from "../lib/utils";
+import { useAuth } from "../hooks/useAuth";
 
 function Navbar({ className }) {
   const [active, setActive] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, isAuthenticated, loginWithTwitter, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    setIsAccountMenuOpen(false); // Close account dropdown
+    setIsMenuOpen(false); // Ensure mobile menu is closed
+    navigate("/");
+  };
+
+  const handleLogin = async () => {
+    await loginWithTwitter();
+  };
 
   if (location.pathname === "/") {
     return null;
@@ -67,9 +82,45 @@ function Navbar({ className }) {
           >
             Telegram
           </a>
-          <div className="hover:opacity-80 transition-opacity cursor-pointer">
-            Account
-          </div>
+          {isAuthenticated && user ? (
+            <div className="relative">
+              <button
+                onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+                className="flex items-center gap-2 cursor-pointer transition-opacity hover:opacity-80"
+              >
+                {user.mode === "development" ? (
+                  <span className="font-medium">dev</span>
+                ) : (
+                  <>
+                    <img
+                      src={user.photo}
+                      alt={user.displayName}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <span className="font-medium">{user.displayName}</span>
+                  </>
+                )}
+              </button>
+              {isAccountMenuOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                  <div
+                    onClick={handleLogout}
+                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                  >
+                    Logout
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={handleLogin}
+              className="px-4 py-2 rounded-full border border-black/20 text-black bg-white flex items-center gap-2 cursor-pointer hover:bg-gray-100 transition-colors"
+            >
+              <span className="text-lg">𝕏</span>
+              Login with X
+            </button>
+          )}
         </div>
         {/* Hamburger Menu Button */}
         <div className="md:hidden">
@@ -153,7 +204,39 @@ function Navbar({ className }) {
             >
               Telegram
             </a>
-            <div className="hover:text-[#FF971D] cursor-pointer">Account</div>
+            <hr className="w-full my-2 border-gray-200" />
+            {isAuthenticated && user ? (
+              <>
+                <div className="flex items-center gap-3 py-2">
+                  {user.mode === "development" ? (
+                    <span className="font-medium">dev</span>
+                  ) : (
+                    <>
+                      <img
+                        src={user.photo}
+                        alt={user.displayName}
+                        className="w-10 h-10 rounded-full"
+                      />
+                      <span className="font-medium">{user.displayName}</span>
+                    </>
+                  )}
+                </div>
+                <div
+                  onClick={handleLogout}
+                  className="cursor-pointer hover:text-[#FF971D] py-2"
+                >
+                  Logout
+                </div>
+              </>
+            ) : (
+              <div
+                onClick={handleLogin}
+                className="flex items-center gap-2 cursor-pointer hover:text-[#FF971D] py-2"
+              >
+                <span className="text-lg">𝕏</span>
+                <span>Login with X</span>
+              </div>
+            )}
           </nav>
         </div>
       )}

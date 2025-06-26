@@ -1,26 +1,60 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect, session, url_for
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 from solana.rpc.api import Client
 from solders.pubkey import Pubkey
 from solana.rpc.types import TokenAccountOpts
+import os
+from dotenv import load_dotenv
+from requests_oauthlib import OAuth1Session
+import jwt
+import json
+from urllib.parse import urlencode
+import threading
+import time
+
+
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
+
 
 # --- Configuração da base de dados ---
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.getenv('SESSION_SECRET')
 db = SQLAlchemy(app)
+DEX_DATA_FILE = os.path.join("instance", "dex_data.json")
 
 # --- Configuração externa ---
 SOLANA_RPC_URL = "https://api.mainnet-beta.solana.com"
 COINGECKO_API_URL = "https://api.coingecko.com/api/v3"
+TWITTER_CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')
+TWITTER_CONSUMER_SECRET = os.getenv('TWITTER_CONSUMER_SECRET')
+JWT_SECRET = os.getenv('JWT_SECRET')
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
 http_session = requests.Session()
 
 # --- Modelos ---
+class User(db.Model):
+    id = db.Column(db.String(50), primary_key=True)
+    username = db.Column(db.String(80), nullable=False)
+    displayName = db.Column(db.String(120), nullable=False)
+    photo = db.Column(db.String(200))
+    followersCount = db.Column(db.Integer)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'displayName': self.displayName,
+            'photo': self.photo,
+            'followersCount': self.followersCount
+        }
+
 class Vote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
@@ -33,6 +67,129 @@ class VoteResponse(db.Model):
     vote_id = db.Column(db.Integer, db.ForeignKey('vote.id'), nullable=False)
     option = db.Column(db.String(100), nullable=False)
     voted_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+# --- Autenticação com Twitter ---
+@app.route('/api/auth/twitter')
+def twitter_login():
+    callback_uri = url_for('twitter_callback', _external=True)
+    oauth = OAuth1Session(TWITTER_CONSUMER_KEY, client_secret=TWITTER_CONSUMER_SECRET, callback_uri=callback_uri)
+    
+    try:
+        fetch_response = oauth.fetch_request_token('https://api.twitter.com/oauth/request_token')
+        session['oauth_token'] = fetch_response.get('oauth_token')
+        session['oauth_token_secret'] = fetch_response.get('oauth_token_secret')
+
+        authorization_url = oauth.authorization_url('https://api.twitter.com/oauth/authorize')
+        return redirect(authorization_url)
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Error connecting to Twitter: {str(e)}"}), 500
+
+@app.route('/api/auth/twitter/callback')
+def twitter_callback():
+    oauth = OAuth1Session(
+        TWITTER_CONSUMER_KEY,
+        client_secret=TWITTER_CONSUMER_SECRET,
+        resource_owner_key=session.get('oauth_token'),
+        resource_owner_secret=session.get('oauth_token_secret'),
+        verifier=request.args.get('oauth_verifier')
+    )
+    
+    try:
+        access_token = oauth.fetch_access_token('https://api.twitter.com/oauth/access_token')
+        
+        # Get user profile
+        profile_oauth = OAuth1Session(
+            TWITTER_CONSUMER_KEY,
+            client_secret=TWITTER_CONSUMER_SECRET,
+            resource_owner_key=access_token.get('oauth_token'),
+            resource_owner_secret=access_token.get('oauth_token_secret')
+        )
+        profile_response = profile_oauth.get('https://api.twitter.com/1.1/account/verify_credentials.json')
+        profile = profile_response.json()
+
+        user = db.session.get(User, profile['id_str'])
+        if user:
+            # Update user info
+            user.username = profile['screen_name']
+            user.displayName = profile['name']
+            user.photo = profile['profile_image_url_https'].replace('_normal', '')
+            user.followersCount = profile['followers_count']
+        else:
+            # Create new user
+            user = User(
+                id=profile['id_str'],
+                username=profile['screen_name'],
+                displayName=profile['name'],
+                photo=profile['profile_image_url_https'].replace('_normal', ''),
+                followersCount=profile['followers_count']
+            )
+            db.session.add(user)
+        db.session.commit()
+
+        # Create JWT
+        payload = {
+            'id': user.id,
+            'username': user.username,
+            'exp': datetime.utcnow() + timedelta(days=7)
+        }
+        token = jwt.encode(payload, JWT_SECRET, algorithm='HS256')
+
+        user_data = user.to_dict()
+        user_json = json.dumps(user_data)
+
+        # Redirect to frontend
+        params = {
+            'token': token,
+            'user': user_json
+        }
+        redirect_url = f"{FRONTEND_URL}/auth/callback?{urlencode(params)}"
+        return redirect(redirect_url)
+
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Authentication failed: {str(e)}"}), 400
+
+# --- DexScreener Trending ---
+def fetch_and_save_dex_data():
+    """Fetches trending token data from DexScreener and saves it to a file."""
+    try:
+        # The public DexScreener API does not have a direct endpoint for "trending".
+        # We'll search for pairs against a common token like USDC to get a broad list.
+        url = "https://api.dexscreener.com/latest/dex/search?q=USDC"
+        response = http_session.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        # We will assume the API returns pairs sorted by some relevance/volume metric.
+        solana_pairs = [p for p in data.get('pairs', []) if p.get('chainId') == 'solana'][:20]
+
+        # Ensure the instance directory exists
+        os.makedirs(os.path.dirname(DEX_DATA_FILE), exist_ok=True)
+
+        with open(DEX_DATA_FILE, 'w') as f:
+            json.dump(solana_pairs, f, indent=4)
+        print("Successfully fetched and saved DexScreener data.")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching DexScreener data: {e}")
+    except Exception as e:
+        print(f"An error occurred in fetch_and_save_dex_data: {e}")
+
+def update_dex_data_periodically():
+    """Runs the data fetcher in a loop."""
+    while True:
+        fetch_and_save_dex_data()
+        time.sleep(30) # Wait for 30 seconds
+
+@app.route('/api/dex/trending')
+def get_dex_trending():
+    try:
+        with open(DEX_DATA_FILE, 'r') as f:
+            data = json.load(f)
+        return jsonify({"pairs": data})
+    except FileNotFoundError:
+        return jsonify({"success": False, "error": "Data not available yet. Please try again in a moment."}), 404
+    except Exception as e:
+        return jsonify({"success": False, "error": f"An error occurred: {str(e)}"}), 500
 
 # --- Helpers CoinGecko ---
 def get_sol_price_info():
@@ -255,4 +412,9 @@ def get_active_vote():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+    
+    # Start the background thread for fetching DexScreener data
+    dex_fetcher_thread = threading.Thread(target=update_dex_data_periodically, daemon=True)
+    dex_fetcher_thread.start()
+
     app.run(debug=True, port=3001)
