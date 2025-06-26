@@ -6,8 +6,6 @@ import requests
 from solana.rpc.api import Client
 from solders.pubkey import Pubkey
 from solana.rpc.types import TokenAccountOpts
-import jwt
-from functools import wraps
 
 app = Flask(__name__)
 CORS(app)
@@ -21,29 +19,6 @@ db = SQLAlchemy(app)
 SOLANA_RPC_URL = "https://api.mainnet-beta.solana.com"
 COINGECKO_API_URL = "https://api.coingecko.com/api/v3"
 http_session = requests.Session()
-
-# --- JWT Secret ---
-JWT_SECRET = "o_teu_segredo_super_secreto"
-
-# --- Middleware de autenticação JWT ---
-def require_auth(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        auth_header = request.headers.get('Authorization', None)
-        if not auth_header or not auth_header.startswith("Bearer "):
-            return jsonify({"success": False, "error": "Token ausente"}), 401
-
-        token = auth_header.split(" ")[1]
-        try:
-            payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-            request.user = payload  # opcional
-        except jwt.ExpiredSignatureError:
-            return jsonify({"success": False, "error": "Token expirado"}), 401
-        except jwt.InvalidTokenError:
-            return jsonify({"success": False, "error": "Token inválido"}), 401
-
-        return f(*args, **kwargs)
-    return decorated_function
 
 # --- Modelos ---
 class Vote(db.Model):
@@ -198,7 +173,6 @@ def get_wallet_portfolio(wallet_address):
 
 # --- Votação: Criar nova (ativa) ---
 @app.route('/api/createvote', methods=['POST'])
-@require_auth
 def create_vote():
     data = request.get_json()
     title = data.get('title')
@@ -218,7 +192,6 @@ def create_vote():
 
 # --- Votação: Votar na ativa ---
 @app.route('/api/vote', methods=['POST'])
-@require_auth
 def vote_active():
     data = request.get_json()
     option = data.get('option')
@@ -238,7 +211,6 @@ def vote_active():
 
 # --- Votação: Adicionar opções à ativa ---
 @app.route('/api/vote/add-option', methods=['POST'])
-@require_auth
 def add_option_to_active_vote():
     data = request.get_json()
     new_options = data.get('options')
