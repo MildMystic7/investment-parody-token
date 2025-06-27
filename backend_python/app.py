@@ -153,8 +153,8 @@ def fetch_and_save_dex_data():
     """Fetches trending token data from DexScreener and saves it to a file."""
     try:
         # The public DexScreener API does not have a direct endpoint for "trending".
-        # We'll search for pairs against a common token like USDC to get a broad list.
-        url = "https://api.dexscreener.com/latest/dex/search?q=USDC"
+        # We'll search for a major Solana DEX to get a list of pairs only on that chain.
+        url = "https://api.dexscreener.com/latest/dex/search?q=raydium&limit20&sortBy=marketCap&sortOrder=desc"
         response = http_session.get(url)
         response.raise_for_status()
         data = response.json()
