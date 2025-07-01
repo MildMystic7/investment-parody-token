@@ -3,11 +3,13 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { Menu, MenuItem } from "./ui/navbar-menu";
 import { cn } from "../lib/utils";
 import { useAuth } from "../hooks/useAuth";
+import LoginModal from "./LoginModal";
 
 function Navbar({ className }) {
   const [active, setActive] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const location = useLocation();
   const { user, isAuthenticated, loginWithTwitter, logout } = useAuth();
   const navigate = useNavigate();
@@ -90,14 +92,19 @@ function Navbar({ className }) {
               >
                 {user.mode === "development" ? (
                   <span className="font-medium">dev</span>
-                ) : (
+                ) : user.photo ? (
                   <>
                     <img
                       src={user.photo}
-                      alt={user.displayName}
+                      alt={user.displayName || user.username || user.email}
                       className="w-8 h-8 rounded-full"
                     />
-                    <span className="font-medium">{user.displayName}</span>
+                    <span className="font-medium">{user.displayName || user.username || user.email}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-2xl">👤</span>
+                    <span className="font-medium">{user.username || user.email}</span>
                   </>
                 )}
               </button>
@@ -113,13 +120,16 @@ function Navbar({ className }) {
               )}
             </div>
           ) : (
-            <button
-              onClick={handleLogin}
-              className="px-4 py-2 rounded-full border border-black/20 text-black bg-white flex items-center gap-2 cursor-pointer hover:bg-gray-100 transition-colors"
-            >
-              <span className="text-lg">𝕏</span>
-              Login with X
-            </button>
+            <>
+              <button
+                onClick={() => setShowLoginModal(true)}
+                className="px-4 py-2 rounded-full border border-black/20 text-black bg-white flex items-center gap-2 cursor-pointer hover:bg-gray-100 transition-colors font-bold"
+              >
+                <span className="text-lg">📝</span>
+                Sign up
+              </button>
+              {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
+            </>
           )}
         </div>
         {/* Hamburger Menu Button */}
@@ -210,14 +220,19 @@ function Navbar({ className }) {
                 <div className="flex items-center gap-3 py-2">
                   {user.mode === "development" ? (
                     <span className="font-medium">dev</span>
-                  ) : (
+                  ) : user.photo ? (
                     <>
                       <img
                         src={user.photo}
-                        alt={user.displayName}
+                        alt={user.displayName || user.username || user.email}
                         className="w-10 h-10 rounded-full"
                       />
-                      <span className="font-medium">{user.displayName}</span>
+                      <span className="font-medium">{user.displayName || user.username || user.email}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-2xl">👤</span>
+                      <span className="font-medium">{user.username || user.email}</span>
                     </>
                   )}
                 </div>
@@ -229,13 +244,16 @@ function Navbar({ className }) {
                 </div>
               </>
             ) : (
-              <div
-                onClick={handleLogin}
-                className="flex items-center gap-2 cursor-pointer hover:text-[#FF971D] py-2"
-              >
-                <span className="text-lg">𝕏</span>
-                <span>Login with X</span>
-              </div>
+              <>
+                <div
+                  onClick={() => { setIsMenuOpen(false); setShowLoginModal(true); }}
+                  className="flex items-center gap-2 cursor-pointer hover:text-[#FF971D] py-2 font-bold"
+                >
+                  <span className="text-lg">📝</span>
+                  <span>Sign up</span>
+                </div>
+                {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
+              </>
             )}
           </nav>
         </div>

@@ -153,3 +153,21 @@
     font-size: 14px;
   }
 }
+
+.loginPromptWarning {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #f9f6f7;
+  border: 1px solid #ff971d;
+  border-radius: 12px;
+  padding: 20px 28px;
+  margin-bottom: 30px;
+  color: #ff971d;
+  font-family: var(--font-primary);
+}
+
+.exclamationIcon {
+  font-size: 2rem;
+  margin-right: 8px;
+}

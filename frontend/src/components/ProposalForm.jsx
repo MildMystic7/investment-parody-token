@@ -64,10 +64,12 @@ function ProposalForm({ onProposalCreated }) {
 
   if (!isAuthenticated) {
     return (
-      <div className={styles.loginPrompt}>
-        <h3>Want to submit a proposal?</h3>
-        <p>Please log in to participate in the Degen Council.</p>
-        {/* Optionally, you can add a login button here */}
+      <div className={styles.loginPrompt + ' ' + styles.loginPromptWarning}>
+        <span className={styles.exclamationIcon}>⚠️</span>
+        <div>
+          <h3>Want to submit a proposal?</h3>
+          <p>Please log in to participate in the Degen Council.</p>
+        </div>
       </div>
     );
   }

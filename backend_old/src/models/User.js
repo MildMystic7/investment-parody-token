@@ -27,6 +27,17 @@ const User = sequelize.define('User', {
     type: DataTypes.INTEGER,
     comment: "The user's followers count on X",
   },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    unique: true,
+    comment: "User email for email/password login",
+  },
+  passwordHash: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: "Hashed password for email login",
+  },
 });
 
 User.hasMany(Proposal, { foreignKey: 'proposedBy' });

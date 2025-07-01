@@ -8,6 +8,7 @@ import { ContainerScroll } from "../components/ui/container-scroll-animation";
 import bonk from "../assets/bonk.webp";
 import fartcoin from "../assets/fartcoin.webp";
 import MemesComponent from "../components/MemesComponent";
+import { Skeleton } from "../components/ui/skeleton";
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -116,7 +117,6 @@ function DashboardPage() {
       </ContainerScroll>
 
       <div className={styles.container}>
-        {/* Market News Section */}
         <div className={styles.marketNews}>
           <div className={styles.newsHeader}>
             <h3>📰 Market News</h3>
@@ -384,64 +384,64 @@ function DashboardPage() {
             </div>
           </div>
         </div>
-        <MemesComponent />
+      </div>
+      <MemesComponent />
 
-        {/* User Info Section */}
-        <div className={styles.userSection}>
-          <div className={styles.welcomeCard}>
-            <div className="flex items-center gap-4 mb-4">
-              <img
-                src={user?.photo || profilePicture}
-                alt="Profile"
-                className="w-16 h-16 rounded-full object-cover"
-              />
-              <div>
-                <h3 className="text-xl font-bold">
-                  Welcome, @{user?.username || "Guest"}
-                </h3>
-                <p className="text-black">
-                  X Followers: {user?.followersCount?.toLocaleString() || "N/A"}
-                </p>
-              </div>
+      {/* User Info Section */}
+      <div className={styles.userSection}>
+        <div className={styles.welcomeCard}>
+          <div className="flex items-center gap-4 mb-4">
+            <img
+              src={user?.photo || profilePicture}
+              alt="Profile"
+              className="w-16 h-16 rounded-full object-cover"
+            />
+            <div>
+              <h3 className="text-xl font-bold">
+                Welcome, @{user?.username || "Guest"}
+              </h3>
+              <p className="text-black">
+                X Followers: {user?.followersCount?.toLocaleString() || "N/A"}
+              </p>
             </div>
-
-            <div className={styles.userStats}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
-                  <h4 className="font-semibold text-lg">Active Votes</h4>
-                  <p className="text-2xl font-bold text-black">2</p>
-                  <div className="text-sm text-black mt-1">
-                    <span className="bg-[#FFE8D6] px-2 py-1 rounded mr-1">
-                      Bonk
-                    </span>
-                    <span className="bg-[#FFE8D6] px-2 py-1 rounded">
-                      Fartcoin
-                    </span>
-                  </div>
-                </div>
-
-                <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
-                  <h4 className="font-semibold text-lg">Total Votes</h4>
-                  <p className="text-2xl font-bold text-black">12</p>
-                  <p className="text-sm text-black">All time</p>
-                </div>
-
-                <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
-                  <h4 className="font-semibold text-lg">Rank</h4>
-                  <p className="text-2xl font-bold text-black">#47</p>
-                  <p className="text-sm text-black">Community</p>
-                </div>
-              </div>
-            </div>
-
-            {user && (
-              <div className="mt-4 p-3 bg-[#FFE8D6] rounded-lg">
-                <p className="text-sm text-black">
-                  <strong>Dev Mode:</strong> {user.username} ({user.email})
-                </p>
-              </div>
-            )}
           </div>
+
+          <div className={styles.userStats}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
+                <h4 className="font-semibold text-lg">Active Votes</h4>
+                <p className="text-2xl font-bold text-black">2</p>
+                <div className="text-sm text-black mt-1">
+                  <span className="bg-[#FFE8D6] px-2 py-1 rounded mr-1">
+                    Bonk
+                  </span>
+                  <span className="bg-[#FFE8D6] px-2 py-1 rounded">
+                    Fartcoin
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
+                <h4 className="font-semibold text-lg">Total Votes</h4>
+                <p className="text-2xl font-bold text-black">12</p>
+                <p className="text-sm text-black">All time</p>
+              </div>
+
+              <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
+                <h4 className="font-semibold text-lg">Rank</h4>
+                <p className="text-2xl font-bold text-black">#47</p>
+                <p className="text-sm text-black">Community</p>
+              </div>
+            </div>
+          </div>
+
+          {user && (
+            <div className="mt-4 p-3 bg-[#FFE8D6] rounded-lg">
+              <p className="text-sm text-black">
+                <strong>Dev Mode:</strong> {user.username} ({user.email})
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
