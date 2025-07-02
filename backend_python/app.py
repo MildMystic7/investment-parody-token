@@ -260,6 +260,39 @@ def get_top_meme_coins():
     except requests.exceptions.RequestException as e:
         return jsonify({"success": False, "error": "Erro CoinGecko"}), 500
 
+# --- Endpoint: Vault Balance ---
+@app.route('/api/vault/balance')
+def get_vault_balance():
+    # Internal vault wallet address - keep this private on backend
+    VAULT_WALLET_ADDRESS = "So11111111111111111111111111111111111111112"  # Replace with your actual vault wallet
+    
+    try:
+        client = Client(SOLANA_RPC_URL)
+        wallet_pubkey = Pubkey.from_string(VAULT_WALLET_ADDRESS)
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Invalid wallet address: {e}"}), 400
+
+    try:
+        sol_balance_resp = client.get_balance(wallet_pubkey)
+        sol_balance = sol_balance_resp.value / 1e9
+
+        sol_price_info = get_sol_price_info()
+        sol_price_usd = sol_price_info['market_data']['current_price']['usd'] if sol_price_info else 0
+        
+        total_vault_value_usd = sol_balance * sol_price_usd
+
+        return jsonify({
+            "success": True,
+            "data": {
+                "balance": sol_balance,
+                "totalValueUsd": total_vault_value_usd,
+                "solPriceUsd": sol_price_usd
+            }
+        })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": "Failed to fetch vault balance"}), 500
+
 # --- Endpoint: Solana Wallet ---
 @app.route('/api/wallet/<wallet_address>')
 def get_wallet_portfolio(wallet_address):

@@ -22,7 +22,7 @@ const Footer = () => {
             <div className={styles.contactSection}>
               <h2 className={styles.sectionTitle}>Stay in touch</h2>
               <p className={styles.contactText}>
-                Announcements can be found in our blog. Press contact:{" "}
+                Announcements can be found in our newsletter. Press contact:{" "}
                 <a
                   href="mailto:media@strattonoakmeme.com"
                   className={styles.emailLink}

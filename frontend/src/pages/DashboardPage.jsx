@@ -14,14 +14,14 @@ function DashboardPage() {
   const { user } = useAuth();
   const [vaultBalance, setVaultBalance] = useState("Loading...");
   const [balanceError, setBalanceError] = useState(null);
+  const [activeVote, setActiveVote] = useState(null);
+  const [timeLeft, setTimeLeft] = useState("");
 
-  // Fetch wallet balance from backend
+  // Fetch vault balance from backend
   useEffect(() => {
-    const fetchWalletBalance = async () => {
+    const fetchVaultBalance = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3001/api/wallet/getInfoWallet"
-        );
+        const response = await fetch("http://localhost:3001/api/vault/balance");
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -30,26 +30,93 @@ function DashboardPage() {
         const data = await response.json();
 
         if (data.success) {
-          // Format the balance nicely
-          const balance = data.data.balance;
-          const formattedBalance = `${balance.toFixed(4)} SOL`;
+          const totalValue = data.data.totalValueUsd;
+          const formattedBalance = `$${totalValue.toFixed(2)}`;
           setVaultBalance(formattedBalance);
           setBalanceError(null);
         } else {
-          setBalanceError(data.error || "Failed to fetch wallet balance");
+          setBalanceError(data.error || "Failed to fetch vault balance");
           setVaultBalance("Error");
         }
       } catch (error) {
-        console.error("Error fetching wallet balance:", error);
+        console.error("Error fetching vault balance:", error);
         setBalanceError(error.message);
         setVaultBalance("Error");
       }
     };
 
-    fetchWalletBalance();
+    fetchVaultBalance();
   }, []);
 
-  // Fake data matching the screenshot
+  // Fetch active vote data
+  useEffect(() => {
+    const fetchActiveVote = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/vote/active");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setActiveVote(data);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching active vote:", error);
+      }
+    };
+
+    fetchActiveVote();
+  }, []);
+
+  // Countdown timer for voting deadline (2 days)
+  useEffect(() => {
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 2);
+
+    const updateTimer = () => {
+      const now = new Date();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60)
+        );
+
+        setTimeLeft(`${days}d ${hours}h ${minutes}m`);
+      } else {
+        setTimeLeft("Voting ended");
+      }
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Get top voted option
+  const getTopVoted = () => {
+    if (!activeVote?.results) return { name: "No votes", votes: 0 };
+    const entries = Object.entries(activeVote.results);
+    if (entries.length === 0) return { name: "No votes", votes: 0 };
+    const topEntry = entries.reduce((a, b) => (a[1] > b[1] ? a : b));
+    return { name: topEntry[0], votes: topEntry[1] };
+  };
+
+  const getTotalVotes = () => {
+    if (!activeVote?.results) return 0;
+    return Object.values(activeVote.results).reduce(
+      (sum, votes) => sum + votes,
+      0
+    );
+  };
+
+  const topVoted = getTopVoted();
+  const totalVotes = getTotalVotes();
+
   const statsData = [
     {
       title: "Vault Value",
@@ -61,24 +128,24 @@ function DashboardPage() {
     },
     {
       title: "Active Votes",
-      value: "487",
+      value: totalVotes.toString(),
       subtitle: "Community votes",
       icon: "",
     },
     {
       title: "Top Voted",
-      value: "Bonk",
-      trend: "Bonk",
-      trendValue: "+3.39%",
+      value: topVoted.name,
+      trend: topVoted.name,
+      trendValue: `${topVoted.votes} votes`,
       trendColor: "green",
       icon: bonk,
     },
     {
-      title: "Least Voted",
-      value: "Fartcoin",
-      trend: "Fartcoin",
-      trendValue: "-0.09%",
-      trendColor: "red",
+      title: "Time Left to Vote",
+      value: timeLeft,
+      trend: "Voting deadline",
+      trendValue: "2 days total",
+      trendColor: "orange",
       icon: fartcoin,
     },
   ];
@@ -115,6 +182,118 @@ function DashboardPage() {
           </div>
         </div>
       </ContainerScroll>
+
+      {/* Features Section */}
+      <div className={styles.container}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Community Governance */}
+          <div className="bg-white border border-[#FFE8D6] rounded-xl p-6 hover:border-[#FF971D] transition-colors">
+            <div className="w-12 h-12 bg-[#FFE8D6] rounded-lg flex items-center justify-center mb-4">
+              <svg
+                className="w-6 h-6 text-[#FF971D]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-black mb-3">
+              Community Governance
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Vote on which memecoins to ape into next. Democracy, but for
+              degenerates.
+            </p>
+          </div>
+
+          {/* Diversified Portfolio */}
+          <div className="bg-white border border-[#FFE8D6] rounded-xl p-6 hover:border-[#FF971D] transition-colors">
+            <div className="w-12 h-12 bg-[#FFE8D6] rounded-lg flex items-center justify-center mb-4">
+              <svg
+                className="w-6 h-6 text-[#FF971D]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-black mb-3">
+              Diversified Portfolio
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Why ape into one memecoin when you can ape into ALL of them?
+            </p>
+          </div>
+
+          {/* Investment Strategy */}
+          <div className="bg-white border border-[#FFE8D6] rounded-xl p-6 hover:border-[#FF971D] transition-colors">
+            <div className="w-12 h-12 bg-[#FFE8D6] rounded-lg flex items-center justify-center mb-4">
+              <svg
+                className="w-6 h-6 text-[#FF971D]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-black mb-3">
+              Investment Strategy
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Overanalyzed market reports written in MBA-speak explaining why we
+              bought dog coins.
+            </p>
+          </div>
+
+          {/* Fee Distribution */}
+          <div className="bg-white border border-[#FFE8D6] rounded-xl p-6 hover:border-[#FF971D] transition-colors">
+            <div className="w-12 h-12 bg-[#FFE8D6] rounded-lg flex items-center justify-center mb-4">
+              <svg
+                className="w-6 h-6 text-[#FF971D]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-black mb-3">
+              Fee Distribution
+            </h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              2% trading fees go straight to the treasury for more ape-ing.
+              Diamond hands get rewarded.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.container}>
+        <MemesComponent />
+      </div>
 
       <div className={styles.container}>
         <div className={styles.marketNews}>
@@ -385,10 +564,9 @@ function DashboardPage() {
           </div>
         </div>
       </div>
-      <MemesComponent />
 
       {/* User Info Section */}
-      <div className={styles.userSection}>
+      <div className={styles.container}>
         <div className={styles.welcomeCard}>
           <div className="flex items-center gap-4 mb-4">
             <img
@@ -434,14 +612,6 @@ function DashboardPage() {
               </div>
             </div>
           </div>
-
-          {user && (
-            <div className="mt-4 p-3 bg-[#FFE8D6] rounded-lg">
-              <p className="text-sm text-black">
-                <strong>Dev Mode:</strong> {user.username} ({user.email})
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>
