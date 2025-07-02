@@ -86,7 +86,7 @@ function CouncilPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/vote/active`);
+      const response = await fetch(`${API_URL}/vote/active/details`);
       const data = await response.json();
       if (!data.success) throw new Error(data.error || "Failed to fetch vote");
       setVote(data);
@@ -102,7 +102,7 @@ function CouncilPage() {
   }, []);
 
   const handleVote = async (option) => {
-    setVotingOption(option);
+    setVotingOption(option.mint);
     setVoteError(null);
     setVoteSuccess(null);
     try {
@@ -113,7 +113,7 @@ function CouncilPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ option }),
+        body: JSON.stringify({ option: option.mint }),
       });
       const data = await response.json();
       if (!data.success) {
@@ -154,24 +154,66 @@ function CouncilPage() {
         ) : vote ? (
           <div className={styles.voteInfo}>
             <h2>{vote.title}</h2>
-            <ul className={styles.optionsList}>
-              {vote.options.map((opt) => (
-                <li key={opt} className={styles.optionItem}>
-                  <span>{opt}</span>
-                  <span>Votes: {vote.results[opt]}</span>
-                  {isAuthenticated && (
-                    <button
-                      className={styles.voteButton}
-                      onClick={() => handleVote(opt)}
-                      disabled={votingOption === opt}
-                      style={{ marginLeft: 16 }}
-                    >
-                      {votingOption === opt ? "Voting..." : "Vote"}
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
+            <table className={styles.voteTable}>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>NAME</th>
+                  <th>PRICE</th>
+                  <th>1H %</th>
+                  <th>24H %</th>
+                  <th>MARKET CAP</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {vote.details.map((option, idx) => (
+                  <tr key={option.mint} className={styles.voteRow}>
+                    <td>{idx + 1}</td>
+                    <td className={styles.tokenCell}>
+                      {option.image ? (
+                        <img src={option.image} alt={option.name || option.mint} className={styles.tokenTableImage} />
+                      ) : (
+                        <div className={styles.tokenTableImagePlaceholder}>🪙</div>
+                      )}
+                      <div>
+                        <div className={styles.tokenNameTable}>{option.name || "Unknown"}</div>
+                        <div className={styles.tokenSymbolTable}>{option.symbol}</div>
+                      </div>
+                    </td>
+                    <td>
+                      {option.price ? `$${Number(option.price).toLocaleString(undefined, { maximumFractionDigits: 6 })}` : "-"}
+                    </td>
+                    <td>
+                      {option.priceInfo && option.priceInfo["1h"] !== undefined
+                        ? `${option.priceInfo["1h"] > 0 ? "+" : ""}${option.priceInfo["1h"].toFixed(2)}%`
+                        : "-"}
+                    </td>
+                    <td>
+                      {option.priceInfo && option.priceInfo["24h"] !== undefined
+                        ? `${option.priceInfo["24h"] > 0 ? "+" : ""}${option.priceInfo["24h"].toFixed(2)}%`
+                        : "-"}
+                    </td>
+                    <td>
+                      {option.marketCap
+                        ? `$${Number(option.marketCap).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                        : "-"}
+                    </td>
+                    <td>
+                      {isAuthenticated && (
+                        <button
+                          className={styles.voteButton}
+                          onClick={() => handleVote(option)}
+                          disabled={votingOption === option.mint}
+                        >
+                          {votingOption === option.mint ? "Voting..." : "Vote"}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
             {voteError && !showLoginModal && <p className={styles.errorText}>{voteError}</p>}
             {voteSuccess && <p className={styles.successText}>{voteSuccess}</p>}
           </div>

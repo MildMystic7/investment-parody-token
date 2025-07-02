@@ -527,36 +527,6 @@ def get_active_vote_details():
         "details": details
     })
 
-# --- Elon Musk Tweets Endpoint ---
-@app.route('/api/twitter/elonmusk-tweets')
-def elonmusk_tweets():
-    # You should set BEARER_TOKEN in your .env for Twitter API v2
-    BEARER_TOKEN = os.getenv('TWITTER_BEARER_TOKEN')
-    if not BEARER_TOKEN:
-        # Mock response if no credentials
-        return jsonify({
-            "tweets": [
-                {"id": "1", "text": "To the moon 🚀", "date": "2024-06-01"},
-                {"id": "2", "text": "Dogecoin to $1?", "date": "2024-05-30"},
-                {"id": "3", "text": "Mars, here we come!", "date": "2024-05-28"}
-            ]
-        })
-    try:
-        url = "https://api.twitter.com/2/users/by/username/elonmusk"
-        headers = {"Authorization": f"Bearer {BEARER_TOKEN}"}
-        user_resp = requests.get(url, headers=headers)
-        user_resp.raise_for_status()
-        user_id = user_resp.json()["data"]["id"]
-        tweets_url = f"https://api.twitter.com/2/users/{user_id}/tweets?max_results=5&tweet.fields=created_at"
-        tweets_resp = requests.get(tweets_url, headers=headers)
-        tweets_resp.raise_for_status()
-        tweets_data = tweets_resp.json().get("data", [])
-        tweets = [
-            {"id": t["id"], "text": t["text"], "date": t["created_at"][:10]} for t in tweets_data
-        ]
-        return jsonify({"tweets": tweets})
-    except Exception as e:
-        return jsonify({"tweets": [], "error": str(e)}), 500
 
 # --- Email/Password Registration ---
 @app.route('/api/register', methods=['POST'])
