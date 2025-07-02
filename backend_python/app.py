@@ -466,6 +466,67 @@ def get_active_vote():
         "results": results
     })
 
+# --- Votação: Consultar detalhes dos resultados da ativa ---
+@app.route('/api/vote/active/details', methods=['GET'])
+def get_active_vote_details():
+    vote = Vote.query.filter_by(is_active=True).first()
+    if not vote:
+        return jsonify({"success": False, "error": "Nenhuma votação ativa"}), 404
+
+    mint_addresses = vote.options
+    if not isinstance(mint_addresses, list) or not all(isinstance(m, str) for m in mint_addresses):
+        return jsonify({"success": False, "error": "Opções inválidas (devem ser endereços de token Solana)"}), 400
+
+    HELIUS_API_KEY = os.getenv('HELIUS_API_KEY')
+    HELIUS_URL = f"https://mainnet.helius-rpc.com/?api-key={HELIUS_API_KEY}" if HELIUS_API_KEY else "https://mainnet.helius-rpc.com/"
+
+    details = []
+    for mint in mint_addresses:
+        asset_info = {}
+        try:
+            payload = {
+                "jsonrpc": "2.0",
+                "id": "get-token-metadata",
+                "method": "getAsset",
+                "params": {
+                    "id": mint
+                }
+            }
+            resp = requests.post(HELIUS_URL, headers={"Content-Type": "application/json"}, json=payload)
+            resp.raise_for_status()
+            result = resp.json().get('result', {})
+            # Extrair campos relevantes
+            asset_info = {
+                'mint': mint,
+                'name': result.get('content', {}).get('metadata', {}).get('name'),
+                'symbol': result.get('content', {}).get('metadata', {}).get('symbol'),
+                'image': result.get('content', {}).get('links', {}).get('image'),
+                'json_uri': result.get('content', {}).get('json_uri'),
+                'metadata': result.get('content', {}).get('metadata', {}),
+                'raw': result
+            }
+        except Exception as e:
+            asset_info = {
+                'mint': mint,
+                'name': None,
+                'symbol': None,
+                'image': None,
+                'json_uri': None,
+                'metadata': {},
+                'raw': {},
+                'error': str(e)
+            }
+        details.append(asset_info)
+        time.sleep(0.05)  # evitar rate limit
+
+    return jsonify({
+        "success": True,
+        "voteId": vote.id,
+        "title": vote.title,
+        "options": mint_addresses,
+        "details": details
+    })
+
 # --- Elon Musk Tweets Endpoint ---
 @app.route('/api/twitter/elonmusk-tweets')
 def elonmusk_tweets():
