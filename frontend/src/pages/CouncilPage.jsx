@@ -39,25 +39,32 @@ function LoginModal({ onClose }) {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <button className={styles.modalClose} onClick={onClose}>×</button>
+        <button className={styles.modalClose} onClick={onClose}>
+          ×
+        </button>
         <h2>Login</h2>
-        <button className={styles.xButton} onClick={() => authService.loginWithTwitter()}>
+        <button
+          className={styles.xButton}
+          onClick={() => authService.loginWithTwitter()}
+        >
           <span className={styles.xIcon}>𝕏</span> Continue with X
         </button>
-        <div className={styles.orLine}><span>or</span></div>
+        <div className={styles.orLine}>
+          <span>or</span>
+        </div>
         <form onSubmit={handleEmailLogin} className={styles.emailForm}>
           <input
             type="email"
             placeholder="Email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button type="submit" disabled={loading}>
@@ -75,6 +82,7 @@ const API_URL = "http://localhost:3001/api";
 function CouncilPage() {
   const { isAuthenticated } = useAuth();
   const [vote, setVote] = useState(null);
+  const [voteResults, setVoteResults] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [votingOption, setVotingOption] = useState(null);
@@ -86,10 +94,22 @@ function CouncilPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_URL}/vote/active/details`);
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error || "Failed to fetch vote");
-      setVote(data);
+      // Fetch both vote details and vote results
+      const [detailsResponse, resultsResponse] = await Promise.all([
+        fetch(`${API_URL}/vote/active/details`),
+        fetch(`${API_URL}/vote/active`),
+      ]);
+
+      const detailsData = await detailsResponse.json();
+      const resultsData = await resultsResponse.json();
+
+      if (!detailsData.success)
+        throw new Error(detailsData.error || "Failed to fetch vote details");
+      if (!resultsData.success)
+        throw new Error(resultsData.error || "Failed to fetch vote results");
+
+      setVote(detailsData);
+      setVoteResults(resultsData.results);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -101,7 +121,7 @@ function CouncilPage() {
     fetchVote();
   }, []);
 
-  const handleVote = async (option) => {
+  const handleVote = async (option, voteType) => {
     setVotingOption(option.mint);
     setVoteError(null);
     setVoteSuccess(null);
@@ -113,11 +133,14 @@ function CouncilPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ option: option.mint }),
+        body: JSON.stringify({ option: option.mint, vote_type: voteType }),
       });
       const data = await response.json();
       if (!data.success) {
-        if (data.error === "Invalid or expired token" || data.error === "Authentication required") {
+        if (
+          data.error === "Invalid or expired token" ||
+          data.error === "Authentication required"
+        ) {
           setShowLoginModal(true);
           return;
         }
@@ -134,11 +157,16 @@ function CouncilPage() {
 
   return (
     <div className={styles.container}>
-      {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
+      {showLoginModal && (
+        <LoginModal onClose={() => setShowLoginModal(false)} />
+      )}
       {/* Page Header */}
       <div className={styles.pageHeader}>
         <h1>Degen Council</h1>
-        <p>Vote on which memecoins to ape into next. Your voice matters (kind of).</p>
+        <p>
+          Vote on which memecoins to ape into next. Your voice matters (kind
+          of).
+        </p>
       </div>
       {/* Proposal Form and Filters (restored) */}
       <ProposalForm />
@@ -152,71 +180,104 @@ function CouncilPage() {
             <p>Error: {error}</p>
           </div>
         ) : vote ? (
-          <div className={styles.voteInfo}>
-            <h2>{vote.title}</h2>
-            <table className={styles.voteTable}>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>NAME</th>
-                  <th>PRICE</th>
-                  <th>1H %</th>
-                  <th>24H %</th>
-                  <th>MARKET CAP</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {vote.details.map((option, idx) => (
-                  <tr key={option.mint} className={styles.voteRow}>
-                    <td>{idx + 1}</td>
-                    <td className={styles.tokenCell}>
-                      {option.image ? (
-                        <img src={option.image} alt={option.name || option.mint} className={styles.tokenTableImage} />
-                      ) : (
-                        <div className={styles.tokenTableImagePlaceholder}>🪙</div>
-                      )}
-                      <div>
-                        <div className={styles.tokenNameTable}>{option.name || "Unknown"}</div>
-                        <div className={styles.tokenSymbolTable}>{option.symbol}</div>
-                      </div>
-                    </td>
-                    <td>
-                      {option.price ? `$${Number(option.price).toLocaleString(undefined, { maximumFractionDigits: 6 })}` : "-"}
-                    </td>
-                    <td>
-                      {option.priceInfo && option.priceInfo["1h"] !== undefined
-                        ? `${option.priceInfo["1h"] > 0 ? "+" : ""}${option.priceInfo["1h"].toFixed(2)}%`
-                        : "-"}
-                    </td>
-                    <td>
-                      {option.priceInfo && option.priceInfo["24h"] !== undefined
-                        ? `${option.priceInfo["24h"] > 0 ? "+" : ""}${option.priceInfo["24h"].toFixed(2)}%`
-                        : "-"}
-                    </td>
-                    <td>
-                      {option.marketCap
-                        ? `$${Number(option.marketCap).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
-                        : "-"}
-                    </td>
-                    <td>
-                      {isAuthenticated && (
-                        <button
-                          className={styles.voteButton}
-                          onClick={() => handleVote(option)}
-                          disabled={votingOption === option.mint}
-                        >
-                          {votingOption === option.mint ? "Voting..." : "Vote"}
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {voteError && !showLoginModal && <p className={styles.errorText}>{voteError}</p>}
+          <>
+            <h2 className={styles.voteTitle}>{vote.title}</h2>
+            {vote.details.map((option) => (
+              <div key={option.mint} className={styles.proposalCard}>
+                <div className={styles.proposalHeader}>
+                  <div className={styles.tokenInfo}>
+                    {option.image ? (
+                      <img
+                        src={option.image}
+                        alt={option.name || option.mint}
+                        className={styles.tokenImage}
+                      />
+                    ) : (
+                      <div className={styles.tokenImagePlaceholder}>🪙</div>
+                    )}
+                    <h3 className={styles.tokenName}>
+                      {option.name || "Unknown Token"}
+                    </h3>
+                  </div>
+                  <div className={styles.proposalMeta}>
+                    <div className={styles.proposedBy}>
+                      Proposed by:
+                      <a
+                        href={`https://x.com/SolanaMaximalist`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.xLink}
+                      >
+                        SolanaMaximalist
+                      </a>
+                    </div>
+                    <div className={styles.date}>Apr 20, 2025</div>
+                  </div>
+                </div>
+
+                <div className={styles.contractAddress}>
+                  <span className={styles.caLabel}>CA:</span>
+                  <a
+                    href={`https://solscan.io/token/${option.mint}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.caLink}
+                  >
+                    {option.mint}
+                  </a>
+                </div>
+
+                <div className={styles.investmentThesis}>
+                  <p>
+                    {option.name} is the Solana memecoin with massive potential.
+                    With the Solana ecosystem growing rapidly, {option.name}{" "}
+                    could be the next 10x play. I propose we allocate 5% of our
+                    treasury to acquire a position.
+                  </p>
+                </div>
+
+                <div className={styles.voteActions}>
+                  <div className={styles.voteStats}>
+                    <span className={styles.voteCount}>
+                      For: {voteResults?.[option.mint]?.for || 0}
+                    </span>
+                    <span className={styles.voteCount}>
+                      Against: {voteResults?.[option.mint]?.against || 0}
+                    </span>
+                  </div>
+                  {isAuthenticated && (
+                    <div className={styles.voteButtons}>
+                      <button
+                        className={`${styles.voteButton} ${styles.apeInButton}`}
+                        onClick={() => handleVote(option, "for")}
+                        disabled={votingOption === option.mint}
+                      >
+                        {votingOption === option.mint ? "Voting..." : "Ape In"}
+                      </button>
+                      <button
+                        className={`${styles.voteButton} ${styles.passButton}`}
+                        onClick={() => handleVote(option, "against")}
+                        disabled={votingOption === option.mint}
+                      >
+                        Pass
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.proposalStatus}>
+                  <span className={styles.statusLabel}>Status: Active</span>
+                  <span className={styles.timeRemaining}>
+                    Time remaining: 1d 12h remaining
+                  </span>
+                </div>
+              </div>
+            ))}
+            {voteError && !showLoginModal && (
+              <p className={styles.errorText}>{voteError}</p>
+            )}
             {voteSuccess && <p className={styles.successText}>{voteSuccess}</p>}
-          </div>
+          </>
         ) : (
           <div className={styles.noResults}>
             <p>No active vote at the moment.</p>

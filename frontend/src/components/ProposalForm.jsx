@@ -9,7 +9,7 @@ function ProposalForm({ onProposalCreated }) {
   const { isAuthenticated } = useAuth();
 
   const [formData, setFormData] = useState({
-    title: "",
+    tokenAddress: "",
     description: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,16 +32,13 @@ function ProposalForm({ onProposalCreated }) {
     setError(null);
     setSuccessMessage("");
 
-    const token = localStorage.getItem("authToken");
-
     try {
-      const response = await fetch(`${API_URL}/proposals`, {
+      const response = await fetch(`${API_URL}/vote/add-option`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ options: [formData.tokenAddress] }),
       });
 
       const result = await response.json();
@@ -50,8 +47,8 @@ function ProposalForm({ onProposalCreated }) {
         throw new Error(result.message || "Failed to submit proposal.");
       }
 
-      setSuccessMessage("Proposal submitted successfully!");
-      setFormData({ title: "", description: "" });
+      setSuccessMessage("Token added to voting successfully!");
+      setFormData({ tokenAddress: "", description: "" });
       if (onProposalCreated) {
         onProposalCreated();
       }
@@ -64,7 +61,7 @@ function ProposalForm({ onProposalCreated }) {
 
   if (!isAuthenticated) {
     return (
-      <div className={styles.loginPrompt + ' ' + styles.loginPromptWarning}>
+      <div className={styles.loginPrompt + " " + styles.loginPromptWarning}>
         <span className={styles.exclamationIcon}>⚠️</span>
         <div>
           <h3>Want to submit a proposal?</h3>
@@ -86,16 +83,16 @@ function ProposalForm({ onProposalCreated }) {
 
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.inputGroup}>
-          <label htmlFor="title" className={styles.label}>
-            Proposal Title
+          <label htmlFor="tokenAddress" className={styles.label}>
+            Token Address
           </label>
           <input
             type="text"
-            id="title"
-            name="title"
-            value={formData.title}
+            id="tokenAddress"
+            name="tokenAddress"
+            value={formData.tokenAddress}
             onChange={handleInputChange}
-            placeholder="e.g., Ape into BONK"
+            placeholder="e.g., DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
             className={styles.input}
             required
           />
@@ -112,7 +109,7 @@ function ProposalForm({ onProposalCreated }) {
             onChange={handleInputChange}
             placeholder="Tell us why this token will moon. Emojis encouraged."
             className={styles.textarea}
-            rows={6}
+            rows={4}
             required
           />
         </div>

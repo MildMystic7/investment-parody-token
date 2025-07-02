@@ -70,6 +70,7 @@ class VoteResponse(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     vote_id = db.Column(db.Integer, db.ForeignKey('vote.id'), nullable=False)
     option = db.Column(db.String(100), nullable=False)
+    vote_type = db.Column(db.String(10), nullable=False)  # 'for' or 'against'
     voted_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.String(50), nullable=False)  # Twitter user id
 
@@ -405,6 +406,10 @@ def vote_active():
 
     data = request.get_json()
     option = data.get('option')
+    vote_type = data.get('vote_type')  # 'for' or 'against'
+
+    if vote_type not in ['for', 'against']:
+        return jsonify({"success": False, "error": "Tipo de voto inválido"}), 400
 
     vote = Vote.query.filter_by(is_active=True).first()
     if not vote:
@@ -413,12 +418,12 @@ def vote_active():
     if option not in vote.options:
         return jsonify({"success": False, "error": "Opção inválida"}), 400
 
-    # Check if user already voted for this vote
-    already_voted = VoteResponse.query.filter_by(vote_id=vote.id, user_id=user_id).first()
+    # Check if user already voted for this specific option/proposal
+    already_voted = VoteResponse.query.filter_by(vote_id=vote.id, user_id=user_id, option=option).first()
     if already_voted:
-        return jsonify({"success": False, "error": "Você já votou nesta votação."}), 400
+        return jsonify({"success": False, "error": "Você já votou nesta proposta."}), 400
 
-    response = VoteResponse(vote_id=vote.id, option=option, user_id=user_id)
+    response = VoteResponse(vote_id=vote.id, option=option, vote_type=vote_type, user_id=user_id)
     db.session.add(response)
     db.session.commit()
 
@@ -453,10 +458,16 @@ def get_active_vote():
     if not vote:
         return jsonify({"success": False, "error": "Nenhuma votação ativa"}), 404
 
-    results = {opt: 0 for opt in vote.options}
+    results = {}
+    for opt in vote.options:
+        results[opt] = {"for": 0, "against": 0}
+    
     for r in VoteResponse.query.filter_by(vote_id=vote.id).all():
         if r.option in results:
-            results[r.option] += 1
+            if r.vote_type == 'for':
+                results[r.option]["for"] += 1
+            elif r.vote_type == 'against':
+                results[r.option]["against"] += 1
 
     return jsonify({
         "success": True,
