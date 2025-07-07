@@ -164,7 +164,7 @@ def fetch_and_save_dex_data():
     try:
         # The public DexScreener API does not have a direct endpoint for "trending".
         # We'll search for a major Solana DEX to get a list of pairs only on that chain.
-        url = "https://api.dexscreener.com/latest/dex/search?q=raydium&limit20&sortBy=marketCap&sortOrder=desc"
+        url = "https://api.dexscreener.com/latest/dex/search?q=raydium&limit=50&sortBy=marketCap&sortOrder=desc"
         response = http_session.get(url)
         response.raise_for_status()
         data = response.json()
@@ -849,6 +849,54 @@ def login():
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm='HS256')
     return jsonify({"success": True, "token": token, "user": user.to_dict()})
+
+# --- Stats Endpoint for Dashboard ---
+@app.route('/api/stats')
+def get_stats():
+    """Get stats for the impressive numbers section"""
+    try:
+        # Get portfolio data first
+        portfolio_response = get_portfolio()
+        portfolio_data = portfolio_response.get_json()
+        
+        total_portfolio_value = 0
+        memecoins_count = 0
+        
+        if portfolio_data.get('success') and portfolio_data.get('data'):
+            total_portfolio_value = portfolio_data['data'].get('totalValueUsd', 0)
+            tokens = portfolio_data['data'].get('tokens', [])
+            # Count tokens excluding SOL (SOL mint: So11111111111111111111111111111111111111112)
+            memecoins_count = len([token for token in tokens if token.get('mint') != 'So11111111111111111111111111111111111111112'])
+        
+        # TODO: Get token holders from DexScreener API for specific token
+        # TOKEN CONTRACT: DtR4D9FtVoTX2569gaL837ZgrB6wNjj6tkmnX9Rdk9B2
+        # DEXSCREENER URL: https://dexscreener.com/solana/9vix1vducteoc2wertsp2tudxxpwaf69aeet8enpjpsn
+        token_holders = 69420  # Placeholder - implement API call to get real data
+        
+        # APY Target - this is a marketing number, can be static or calculated
+        apy_target = 420  # 420% - classic meme number
+        
+        return jsonify({
+            "success": True,
+            "data": {
+                "totalPortfolioValue": total_portfolio_value,
+                "tokenHolders": token_holders,  # TODO: Fetch from DexScreener API
+                "apyTarget": apy_target,
+                "memecoinCount": memecoins_count
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "data": {
+                "totalPortfolioValue": 0,
+                "tokenHolders": 69420,  # Fallback number
+                "apyTarget": 420,
+                "memecoinCount": 0
+            }
+        })
 
 # --- Início da app ---
 if __name__ == '__main__':

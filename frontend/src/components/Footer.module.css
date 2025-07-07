@@ -129,14 +129,16 @@
   background: #ff971d;
   color: white;
   border: 1px solid #ff971d;
-  padding: 16px 24px;
+  padding: 12px 14px;
   border-radius: 12px;
   font-family: var(--font-primary);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  max-width: 150px;
+  text-align: center;
 }
 
 .submitButton:hover {
@@ -295,7 +297,8 @@
   }
 
   .submitButton {
-    width: 100%;
+    width: 50%;
+    text-align: center;
   }
 }
 

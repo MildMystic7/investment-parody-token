@@ -17,6 +17,8 @@ function DashboardPage() {
   const [timeLeft, setTimeLeft] = useState("");
   const [userVoteStats, setUserVoteStats] = useState(null);
   const [userStatsLoading, setUserStatsLoading] = useState(true);
+  const [impressiveStats, setImpressiveStats] = useState(null);
+  const [impressiveStatsLoading, setImpressiveStatsLoading] = useState(true);
 
   // Fetch vault balance from backend
   useEffect(() => {
@@ -146,6 +148,27 @@ function DashboardPage() {
     fetchUserVoteStats();
   }, [user]);
 
+  // Fetch impressive stats
+  useEffect(() => {
+    const fetchImpressiveStats = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/stats");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setImpressiveStats(data.data);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching impressive stats:", error);
+      } finally {
+        setImpressiveStatsLoading(false);
+      }
+    };
+
+    fetchImpressiveStats();
+  }, []);
+
   // Get top voted option with readable name and image
   const getTopVoted = () => {
     if (!activeVote?.results) return { name: "No votes", votes: 0, image: "" };
@@ -221,6 +244,102 @@ function DashboardPage() {
   const totalVotes = getTotalVotes();
   const proposalCount = getProposalCount();
 
+  // Impressive Numbers Component
+  const ImpressiveNumbersSection = () => {
+    if (impressiveStatsLoading) {
+      return (
+        <div className={styles.container}>
+          <div className="text-center py-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-black mb-6">
+              Impressive Numbers That Make No Sense
+            </h2>
+            <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-12">
+              We've achieved remarkable metrics that we're not entirely sure how
+              to interpret, but they look great in presentations.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="bg-white border border-[#FFE8D6] rounded-xl p-8 text-center"
+                >
+                  <Skeleton className="h-16 w-full mb-4 bg-gray-300" />
+                  <Skeleton className="h-6 w-3/4 mx-auto mb-2 bg-gray-300" />
+                  <Skeleton className="h-4 w-1/2 mx-auto bg-gray-300" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const formatValue = (value) => {
+      if (value >= 1000000) {
+        return `$${(value / 1000000).toFixed(1)}M`;
+      } else if (value >= 1000) {
+        return `$${(value / 1000).toFixed(1)}K`;
+      } else {
+        return `$${value.toFixed(2)}`;
+      }
+    };
+
+    return (
+      <div className={styles.container}>
+        <div className="text-center py-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-black mb-6">
+            Impressive Numbers That Make No Sense
+          </h2>
+          <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-12">
+            We've achieved remarkable metrics that we're not entirely sure how
+            to interpret, but they look great in presentations.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Total Portfolio Value */}
+            <div className="bg-white border border-[#FFE8D6] rounded-xl p-8 text-center hover:border-[#FF971D] transition-colors">
+              <div className="text-4xl md:text-5xl font-bold text-black mb-4">
+                {impressiveStats
+                  ? formatValue(impressiveStats.totalPortfolioValue)
+                  : "$0"}
+              </div>
+              <h3 className="text-lg font-bold text-black mb-2">
+                Total Portfolio Value
+              </h3>
+              <p className="text-sm text-gray-600">
+                Until we ape into something else
+              </p>
+            </div>
+
+            {/* Token Holders */}
+            <div className="bg-white border border-[#FFE8D6] rounded-xl p-8 text-center hover:border-[#FF971D] transition-colors">
+              <div className="text-4xl md:text-5xl font-bold text-black mb-4">
+                {impressiveStats
+                  ? impressiveStats.tokenHolders.toLocaleString()
+                  : "69,420"}
+              </div>
+              <h3 className="text-lg font-bold text-black mb-2">
+                Token Holders
+              </h3>
+              <p className="text-sm text-gray-600">Diamond hands only</p>
+            </div>
+
+            {/* Memecoins in Portfolio */}
+            <div className="bg-white border border-[#FFE8D6] rounded-xl p-8 text-center hover:border-[#FF971D] transition-colors">
+              <div className="text-4xl md:text-5xl font-bold text-black mb-4">
+                {impressiveStats ? impressiveStats.memecoinCount : "47"}
+              </div>
+              <h3 className="text-lg font-bold text-black mb-2">
+                Memecoins in Portfolio
+              </h3>
+              <p className="text-sm text-gray-600">Diversification is key</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const statsData = [
     {
       title: "Vault Value",
@@ -262,6 +381,14 @@ function DashboardPage() {
               {words}
             </h1>
             <p className="text-md md:text-lg text-black mt-2">{words2}</p>
+            <div className="flex justify-center mt-8">
+              <a
+                href="/oakcoin"
+                className="px-8 py-4 bg-[#FF971D] text-white font-bold text-lg rounded-full hover:bg-[#e8851a] transition-colors shadow-lg"
+              >
+                Buy OakCoin
+              </a>
+            </div>
           </div>
         }
       >
@@ -286,13 +413,18 @@ function DashboardPage() {
         </div>
       </ContainerScroll>
 
-      <div className="flex justify-center mb-8">
-        <a
-          href="/oakcoin"
-          className="px-8 py-4 bg-[#FF971D] text-white font-bold text-lg rounded-full hover:bg-[#e8851a] transition-colors shadow-lg"
-        >
-          Buy OakCoin
-        </a>
+      {/* Hero Text Section */}
+      <div className={styles.container}>
+        <div className="text-center py-8">
+          <h2 className="text-2xl md:text-4xl font-bold text-black mb-6">
+            We combine traditional finance with Degen Energy
+          </h2>
+          <p className="text-lg md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Stratton Oakmeme isn't just another memecoin. It's a
+            community-driven fund that lets you participate in the future of
+            borderline-nonsensical finance.
+          </p>
+        </div>
       </div>
 
       {/* Features Section */}
@@ -396,8 +528,7 @@ function DashboardPage() {
               Fee Distribution
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              2% trading fees go straight to the treasury for more ape-ing.
-              Diamond hands get rewarded.
+              Creator Rewards fees go straight to the treasury for more ape-ing.
             </p>
           </div>
         </div>
@@ -406,6 +537,9 @@ function DashboardPage() {
       <div className={styles.container}>
         <MemesComponent />
       </div>
+
+      {/* Impressive Numbers Section */}
+      <ImpressiveNumbersSection />
 
       <div className={styles.container}>
         <div className={styles.marketNews}>

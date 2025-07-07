@@ -15,7 +15,7 @@
   font-family: var(--font-primary);
   font-size: 28px;
   font-weight: 700;
-  color: white;
+  color: black;
   margin: 0 0 12px 0;
 }
 
@@ -274,6 +274,32 @@
   border: 1px solid #ffe8d6;
   border-radius: 12px;
   background-color: #f9f6f7;
+}
+
+.scrollableRows {
+  max-height: 400px; /* Height for ~5 rows (80px per row) */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar styling */
+.scrollableRows::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollableRows::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.scrollableRows::-webkit-scrollbar-thumb {
+  background: #ff971d;
+  border-radius: 4px;
+}
+
+.scrollableRows::-webkit-scrollbar-thumb:hover {
+  background: #e8851a;
 }
 
 .tableHeader,

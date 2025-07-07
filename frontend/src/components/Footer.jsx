@@ -22,12 +22,12 @@ const Footer = () => {
             <div className={styles.contactSection}>
               <h2 className={styles.sectionTitle}>Stay in touch</h2>
               <p className={styles.contactText}>
-                Announcements can be found in our newsletter. Press contact:{" "}
+                For collaborations, press contact:{" "}
                 <a
-                  href="mailto:media@strattonoakmeme.com"
+                  href="mailto:partners@strattonoakmeme.com"
                   className={styles.emailLink}
                 >
-                  media@strattonoakmeme.com
+                  partners@strattonoakmeme.com
                 </a>
               </p>
             </div>
@@ -38,48 +38,16 @@ const Footer = () => {
                 Subscribe to our newsletter
               </h2>
               <p className={styles.newsletterDescription}>
-                New memecoins supported, blog updates and exclusive offers
-                directly in your inbox
+                New memecoins supported, announcements and new proposals
+                directly in our Telegram.
               </p>
-              <form
-                onSubmit={handleNewsletterSubmit}
-                className={styles.newsletterForm}
+            
+              <a
+                href="https://t.me/OakmemeStratton"
+                className={styles.submitButton}
               >
-                <div className={styles.inputContainer}>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className={styles.emailInput}
-                    required
-                  />
-                  <button type="submit" className={styles.submitButton}>
-                    Subscribe to newsletter
-                  </button>
-                </div>
-              </form>
-              <div className={styles.privacyText}>
-                <p>
-                  Your email address will only be used to send you our
-                  newsletter, as well as updates and offers. You can unsubscribe
-                  at any time using the link included in the newsletter.{" "}
-                  <a href="#" className={styles.privacyLink}>
-                    Learn more about how we manage your data and your rights.
-                  </a>
-                </p>
-                <p>
-                  This site is protected by reCAPTCHA and the Google{" "}
-                  <a href="#" className={styles.privacyLink}>
-                    Privacy Policy
-                  </a>{" "}
-                  and{" "}
-                  <a href="#" className={styles.privacyLink}>
-                    Terms of Service
-                  </a>{" "}
-                  apply.
-                </p>
-              </div>
+                Join Now!
+              </a>
             </div>
           </div>
 
