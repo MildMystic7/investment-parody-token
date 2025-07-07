@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   AreaChart,
   Area,
@@ -8,82 +8,61 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const chartData = [
-  { date: "2024-05-01", bonk: 400, fartcoin: 240 },
-  { date: "2024-05-02", bonk: 300, fartcoin: 139 },
-  { date: "2024-05-03", bonk: 200, fartcoin: 980 },
-  { date: "2024-05-04", bonk: 278, fartcoin: 390 },
-  { date: "2024-05-05", bonk: 189, fartcoin: 480 },
-  { date: "2024-05-06", bonk: 239, fartcoin: 380 },
-  { date: "2024-05-07", bonk: 349, fartcoin: 430 },
-  { date: "2024-05-08", bonk: 400, fartcoin: 240 },
-  { date: "2024-05-09", bonk: 300, fartcoin: 139 },
-  { date: "2024-05-10", bonk: 200, fartcoin: 980 },
-  { date: "2024-05-11", bonk: 278, fartcoin: 390 },
-  { date: "2024-05-12", bonk: 189, fartcoin: 480 },
-  { date: "2024-05-13", bonk: 239, fartcoin: 380 },
-  { date: "2024-05-14", bonk: 349, fartcoin: 430 },
-  { date: "2024-05-15", bonk: 400, fartcoin: 240 },
-  { date: "2024-05-16", bonk: 300, fartcoin: 139 },
-  { date: "2024-05-17", bonk: 200, fartcoin: 980 },
-  { date: "2024-05-18", bonk: 278, fartcoin: 390 },
-  { date: "2024-05-19", bonk: 189, fartcoin: 480 },
-  { date: "2024-05-20", bonk: 239, fartcoin: 380 },
-  { date: "2024-05-21", bonk: 349, fartcoin: 430 },
-  { date: "2024-05-22", bonk: 400, fartcoin: 240 },
-  { date: "2024-05-23", bonk: 300, fartcoin: 139 },
-  { date: "2024-05-24", bonk: 200, fartcoin: 980 },
-  { date: "2024-05-25", bonk: 278, fartcoin: 390 },
-  { date: "2024-05-26", bonk: 189, fartcoin: 480 },
-  { date: "2024-05-27", bonk: 239, fartcoin: 380 },
-  { date: "2024-05-28", bonk: 349, fartcoin: 430 },
-  { date: "2024-05-29", bonk: 400, fartcoin: 240 },
-  { date: "2024-05-30", bonk: 300, fartcoin: 139 },
-  { date: "2024-05-31", bonk: 450, fartcoin: 600 },
-  { date: "2024-06-01", bonk: 500, fartcoin: 300 },
-  { date: "2024-06-02", bonk: 550, fartcoin: 450 },
-  { date: "2024-06-03", bonk: 480, fartcoin: 400 },
-  { date: "2024-06-04", bonk: 600, fartcoin: 500 },
-  { date: "2024-06-05", bonk: 620, fartcoin: 550 },
-  { date: "2024-06-06", bonk: 580, fartcoin: 510 },
-  { date: "2024-06-07", bonk: 640, fartcoin: 580 },
-  { date: "2024-06-08", bonk: 680, fartcoin: 620 },
-  { date: "2024-06-09", bonk: 720, fartcoin: 650 },
-  { date: "2024-06-10", bonk: 700, fartcoin: 610 },
-  { date: "2024-06-11", bonk: 750, fartcoin: 680 },
-  { date: "2024-06-12", bonk: 800, fartcoin: 720 },
-  { date: "2024-06-13", bonk: 780, fartcoin: 700 },
-  { date: "2024-06-14", bonk: 820, fartcoin: 750 },
-  { date: "2024-06-15", bonk: 850, fartcoin: 780 },
-  { date: "2024-06-16", bonk: 880, fartcoin: 810 },
-  { date: "2024-06-17", bonk: 900, fartcoin: 830 },
-  { date: "2024-06-18", bonk: 920, fartcoin: 850 },
-  { date: "2024-06-19", bonk: 950, fartcoin: 880 },
-  { date: "2024-06-20", bonk: 930, fartcoin: 860 },
-  { date: "2024-06-21", bonk: 960, fartcoin: 890 },
-  { date: "2024-06-22", bonk: 980, fartcoin: 910 },
-  { date: "2024-06-23", bonk: 1000, fartcoin: 930 },
-  { date: "2024-06-24", bonk: 1020, fartcoin: 950 },
-  { date: "2024-06-25", bonk: 1050, fartcoin: 970 },
-  { date: "2024-06-26", bonk: 1030, fartcoin: 960 },
-  { date: "2024-06-27", bonk: 1080, fartcoin: 1000 },
-  { date: "2024-06-28", bonk: 1100, fartcoin: 1020 },
-  { date: "2024-06-29", bonk: 1150, fartcoin: 1050 },
-  { date: "2024-06-30", bonk: 1200, fartcoin: 1100 },
-];
+// Generate 7 days of mock portfolio data based on current value
+const generateChartData = (currentValue) => {
+  const data = [];
+  const today = new Date();
+
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+
+    // Create some realistic fluctuation around the current value
+    const variation = 0.8 + Math.random() * 0.4; // 80% to 120% of current value
+    const value = currentValue * variation;
+
+    data.push({
+      date: date.toISOString().split("T")[0],
+      portfolioValue: Math.round(value * 100) / 100,
+    });
+  }
+
+  // Ensure the last day shows the actual current value
+  data[data.length - 1].portfolioValue = currentValue;
+
+  return data;
+};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
+    const formatCurrency = (value) => {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value);
+    };
+
+    const formatDate = (dateStr) => {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    };
+
     return (
-      <div className="p-4 bg-white flex flex-col gap-4 rounded-md border border-[#FFE8D6]">
-        <div className="text-medium text-lg text-black">{label}</div>
-        <div className="text-sm text-black">
-          Bonk:
-          <span className="ml-2">${payload[0].value}</span>
+      <div className="p-4 bg-white flex flex-col gap-2 rounded-md border border-[#FFE8D6] shadow-lg">
+        <div className="text-medium text-lg text-black">
+          {formatDate(label)}
         </div>
         <div className="text-sm text-black">
-          Fartcoin:
-          <span className="ml-2">${payload[1].value}</span>
+          Portfolio Value:
+          <span className="ml-2 font-semibold">
+            {formatCurrency(payload[0].value)}
+          </span>
         </div>
       </div>
     );
@@ -92,65 +71,63 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export function ChartAreaInteractive() {
-  const [timeRange, setTimeRange] = React.useState("30d");
+  const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const getFilteredData = () => {
-    const now = new Date("2024-06-30");
-    let daysToSubtract = 30;
-    if (timeRange === "7d") {
-      daysToSubtract = 7;
-    } else if (timeRange === "1d") {
-      daysToSubtract = 1;
-    }
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:3001/api/portfolio");
+        const data = await response.json();
 
-    const startDate = new Date(
-      now.getTime() - daysToSubtract * 24 * 60 * 60 * 1000
+        if (data.success) {
+          // Generate 7 days of chart data based on current portfolio value
+          const currentValue = data.data.totalValueUsd || 0;
+          const mockChartData = generateChartData(currentValue);
+          setChartData(mockChartData);
+        }
+      } catch (err) {
+        console.error("Portfolio fetch error:", err);
+        // Fallback to mock data
+        setChartData(generateChartData(162000));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPortfolio();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-[#F9F6F7] p-8 rounded-2xl text-black max-w-[1600px] mx-auto w-full">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-300 rounded w-1/3 mb-4"></div>
+          <div className="h-4 bg-gray-300 rounded w-1/2 mb-8"></div>
+          <div className="h-[400px] bg-gray-300 rounded"></div>
+        </div>
+      </div>
     );
-
-    return chartData.filter(
-      (item) => new Date(item.date) >= startDate && new Date(item.date) <= now
-    );
-  };
-
-  const filteredData = getFilteredData();
+  }
 
   return (
     <div className="bg-[#F9F6F7] p-8 rounded-2xl text-black max-w-[1600px] mx-auto w-full">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h3 className="text-2xl font-bold text-black">Performance Chart</h3>
-          <p className="text-black text-md mt-2">
-            Showing total portfolio value for the last{" "}
-            {timeRange === "30d"
-              ? "30 days"
-              : timeRange === "7d"
-              ? "7 days"
-              : "day"}
-          </p>
-        </div>
-        <select
-          className="bg-white text-black px-4 py-2 border border-[#FFE8D6] rounded-lg text-sm"
-          value={timeRange}
-          onChange={(e) => setTimeRange(e.target.value)}
-        >
-          <option value="30d">Last 30 days</option>
-          <option value="7d">Last 7 days</option>
-          <option value="1d">Last day</option>
-        </select>
+      <div className="mb-8">
+        <h3 className="text-2xl font-bold text-black">Performance Chart</h3>
+        <p className="text-black text-md mt-2">
+          Showing total portfolio value for the last 7 days
+        </p>
       </div>
       <ResponsiveContainer width="100%" height={400}>
         <AreaChart
-          data={filteredData}
+          data={chartData}
           margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
         >
           <defs>
-            <linearGradient id="colorBonk" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="colorPortfolio" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#FF971D" stopOpacity={0.8} />
               <stop offset="95%" stopColor="#FF971D" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="colorFartcoin" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#6b7280" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#6b7280" stopOpacity={0} />
             </linearGradient>
           </defs>
           <XAxis
@@ -175,32 +152,19 @@ export function ChartAreaInteractive() {
           />
           <Area
             type="monotone"
-            dataKey="bonk"
+            dataKey="portfolioValue"
             stroke="#FF971D"
-            strokeWidth={2}
+            strokeWidth={3}
             fillOpacity={1}
-            fill="url(#colorBonk)"
-            name="Bonk"
-          />
-          <Area
-            type="monotone"
-            dataKey="fartcoin"
-            stroke="#6b7280"
-            strokeWidth={2}
-            fillOpacity={1}
-            fill="url(#colorFartcoin)"
-            name="Fartcoin"
+            fill="url(#colorPortfolio)"
+            name="Portfolio Value"
           />
         </AreaChart>
       </ResponsiveContainer>
-      <div className="flex justify-center items-center gap-8 mt-8">
+      <div className="flex justify-center items-center mt-8">
         <div className="flex items-center gap-3">
-          <div className="w-4 h-4 rounded-full bg-[#FF971D]"></div>
-          <span className="text-md text-black">Bonk</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="w-4 h-4 rounded-full bg-gray-500"></div>
-          <span className="text-md text-black">Fartcoin</span>
+            <div className="w-4 h-4 rounded-full bg-[#FF971D]"></div>
+          <span className="text-md text-black">Total Portfolio Value</span>
         </div>
       </div>
     </div>

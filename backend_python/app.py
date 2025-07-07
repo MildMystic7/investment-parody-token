@@ -265,7 +265,7 @@ def get_top_meme_coins():
 @app.route('/api/vault/balance')
 def get_vault_balance():
     # Internal vault wallet address - keep this private on backend
-    VAULT_WALLET_ADDRESS = "9f2ornZ1JAe3T1gGx7ZdfwrfRioJdAf1W1JPSCDEU6Lz"  # Our portfolio wallet
+    VAULT_WALLET_ADDRESS = "GMJDgxh83g5jbxEp9k4z1DsMhZscyityViiToketXEPv"  # Our portfolio wallet
     
     try:
         client = Client(SOLANA_RPC_URL)
@@ -298,7 +298,7 @@ def get_vault_balance():
 @app.route('/api/portfolio')
 def get_portfolio():
     # Use the same vault wallet address for portfolio
-    VAULT_WALLET_ADDRESS = "9f2ornZ1JAe3T1gGx7ZdfwrfRioJdAf1W1JPSCDEU6Lz"
+    VAULT_WALLET_ADDRESS = "GMJDgxh83g5jbxEp9k4z1DsMhZscyityViiToketXEPv"
     return get_wallet_portfolio(VAULT_WALLET_ADDRESS)
 
 # --- Endpoint: Solana Wallet ---
@@ -336,6 +336,8 @@ def get_wallet_portfolio(wallet_address):
 
         # Add SOL to portfolio with price lookup
         sol_price_usd = 0
+        sol_value_usd = 0
+        
         if sol_balance > 0:
             # Get SOL price from Jupiter
             try:
@@ -346,7 +348,26 @@ def get_wallet_portfolio(wallet_address):
                     if 'data' in jupiter_data and 'So11111111111111111111111111111111111111112' in jupiter_data['data']:
                         sol_price_usd = jupiter_data['data']['So11111111111111111111111111111111111111112']['price']
             except Exception as e:
-                pass
+                print(f"Error fetching SOL price from Jupiter: {e}")
+            
+            # If Jupiter fails, try DEXScreener for SOL
+            if sol_price_usd == 0:
+                try:
+                    dex_url = "https://api.dexscreener.com/latest/dex/tokens/So11111111111111111111111111111111111111112"
+                    dex_resp = requests.get(dex_url, timeout=3)
+                    if dex_resp.status_code == 200:
+                        dex_data = dex_resp.json()
+                        if 'pairs' in dex_data and len(dex_data['pairs']) > 0:
+                            # Get the pair with highest liquidity
+                            best_pair = max(dex_data['pairs'], key=lambda x: float(x.get('liquidity', {}).get('usd', 0)))
+                            sol_price_usd = float(best_pair.get('priceUsd', 0))
+                except Exception as e:
+                    print(f"Error fetching SOL price from DEXScreener: {e}")
+            
+            # If all APIs fail, use fallback price
+            if sol_price_usd == 0:
+                sol_price_usd = 152.0  # Fallback price as mentioned by user
+                print("Using fallback SOL price: $152")
             
             sol_value_usd = sol_balance * sol_price_usd
             total_portfolio_value_usd += sol_value_usd
@@ -496,7 +517,7 @@ def get_wallet_portfolio(wallet_address):
             "data": {
                 "wallet": wallet_address,
                 "totalValueUsd": total_portfolio_value_usd,
-                "solValueUsd": sol_balance * sol_price_usd if 'sol_price_usd' in locals() else 0,
+                "solValueUsd": sol_value_usd,
                 "tokens": portfolio
             }
         })
