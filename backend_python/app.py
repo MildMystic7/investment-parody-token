@@ -265,7 +265,7 @@ def get_top_meme_coins():
 @app.route('/api/vault/balance')
 def get_vault_balance():
     # Internal vault wallet address - keep this private on backend
-    VAULT_WALLET_ADDRESS = "So11111111111111111111111111111111111111112"  # Replace with your actual vault wallet
+    VAULT_WALLET_ADDRESS = "9f2ornZ1JAe3T1gGx7ZdfwrfRioJdAf1W1JPSCDEU6Lz"  # Our portfolio wallet
     
     try:
         client = Client(SOLANA_RPC_URL)
@@ -294,6 +294,13 @@ def get_vault_balance():
     except Exception as e:
         return jsonify({"success": False, "error": "Failed to fetch vault balance"}), 500
 
+# --- Endpoint: Portfolio Holdings ---
+@app.route('/api/portfolio')
+def get_portfolio():
+    # Use the same vault wallet address for portfolio
+    VAULT_WALLET_ADDRESS = "9f2ornZ1JAe3T1gGx7ZdfwrfRioJdAf1W1JPSCDEU6Lz"
+    return get_wallet_portfolio(VAULT_WALLET_ADDRESS)
+
 # --- Endpoint: Solana Wallet ---
 @app.route('/api/wallet/<wallet_address>')
 def get_wallet_portfolio(wallet_address):
@@ -304,66 +311,192 @@ def get_wallet_portfolio(wallet_address):
         return jsonify({"success": False, "error": f"Endereço inválido: {e}"}), 400
 
     try:
-        sol_balance_resp = client.get_balance(wallet_pubkey)
-        sol_balance = sol_balance_resp.value / 1e9
-
-        sol_price_info = get_sol_price_info()
-        sol_price_usd = sol_price_info['market_data']['current_price']['usd'] if sol_price_info else 0
+        # Use Helius API for everything
+        HELIUS_API_KEY = os.getenv('HELIUS_API_KEY')
+        HELIUS_URL = f"https://mainnet.helius-rpc.com/?api-key={HELIUS_API_KEY}" if HELIUS_API_KEY else "https://mainnet.helius-rpc.com/"
+        
+        # Get SOL balance using Helius
+        sol_balance_payload = {
+            "jsonrpc": "2.0",
+            "id": "get-balance",
+            "method": "getBalance",
+            "params": [wallet_address]
+        }
+        
+        sol_balance_resp = requests.post(HELIUS_URL, headers={"Content-Type": "application/json"}, json=sol_balance_payload)
+        sol_balance_resp.raise_for_status()
+        sol_balance_data = sol_balance_resp.json()
+        
+        sol_balance = 0
+        if 'result' in sol_balance_data and 'value' in sol_balance_data['result']:
+            sol_balance = sol_balance_data['result']['value'] / 1e9
 
         portfolio = []
-        total_portfolio_value_usd = sol_balance * sol_price_usd
+        total_portfolio_value_usd = 0
 
-        portfolio.append({
-            "mint": "So11111111111111111111111111111111111111112",
-            "name": "Solana",
-            "symbol": "SOL",
-            "amount": sol_balance,
-            "priceUsd": sol_price_usd,
-            "valueUsd": sol_balance * sol_price_usd,
-            "icon": sol_price_info.get('image', {}).get('thumb') if sol_price_info else None
-        })
+        # Add SOL to portfolio with price lookup
+        sol_price_usd = 0
+        if sol_balance > 0:
+            # Get SOL price from Jupiter
+            try:
+                jupiter_url = "https://price.jup.ag/v4/price?ids=So11111111111111111111111111111111111111112"
+                jupiter_resp = requests.get(jupiter_url, timeout=3)
+                if jupiter_resp.status_code == 200:
+                    jupiter_data = jupiter_resp.json()
+                    if 'data' in jupiter_data and 'So11111111111111111111111111111111111111112' in jupiter_data['data']:
+                        sol_price_usd = jupiter_data['data']['So11111111111111111111111111111111111111112']['price']
+            except Exception as e:
+                pass
+            
+            sol_value_usd = sol_balance * sol_price_usd
+            total_portfolio_value_usd += sol_value_usd
+            
+            portfolio.append({
+                "mint": "So11111111111111111111111111111111111111112",
+                "name": "Solana",
+                "symbol": "SOL",
+                "amount": sol_balance,
+                "priceUsd": sol_price_usd,
+                "valueUsd": sol_value_usd,
+                "icon": "https://coin-images.coingecko.com/coins/images/4128/thumb/solana.png"
+            })
 
-        token_accounts_resp = client.get_token_accounts_by_owner(
-            wallet_pubkey,
-            TokenAccountOpts(program_id=Pubkey.from_string("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"))
-        )
-        token_accounts = token_accounts_resp.value
+        # Get token accounts using Helius getTokenAccountsByOwner
+        token_accounts_payload = {
+            "jsonrpc": "2.0",
+            "id": "get-token-accounts",
+            "method": "getTokenAccountsByOwner",
+            "params": [
+                wallet_address,
+                {
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+                },
+                {
+                    "encoding": "jsonParsed"
+                }
+            ]
+        }
+
+        token_accounts_resp = requests.post(HELIUS_URL, headers={"Content-Type": "application/json"}, json=token_accounts_payload)
+        token_accounts_resp.raise_for_status()
+        token_accounts_data = token_accounts_resp.json()
+
+        if 'result' not in token_accounts_data:
+            return jsonify({
+                "success": True,
+                "data": {
+                    "wallet": wallet_address,
+                    "totalValueUsd": total_portfolio_value_usd,
+                    "solValueUsd": 0,
+                    "tokens": portfolio
+                }
+            })
+
+        token_accounts = token_accounts_data['result']['value']
 
         for account in token_accounts:
-            if not hasattr(account.account.data, 'parsed'):
+            try:
+                # Extract token info from Helius token account response
+                account_info = account.get('account', {})
+                data = account_info.get('data', {})
+                parsed = data.get('parsed', {})
+                info = parsed.get('info', {})
+                
+                mint_address = info.get('mint')
+                token_amount_info = info.get('tokenAmount', {})
+                token_balance = float(token_amount_info.get('uiAmount', 0))
+                decimals = token_amount_info.get('decimals', 0)
+
+                if token_balance <= 0:
+                    continue
+
+                # Get token metadata using Helius DAS API
+                token_name = f"Token {mint_address[:8]}..." if mint_address else "Unknown Token"
+                token_symbol = f"TOKEN-{mint_address[:8]}" if mint_address else "UNKNOWN"
+                token_image = None
+                price_usd = 0
+                
+                # Try to get metadata from Helius DAS API
+                try:
+                    metadata_payload = {
+                        "jsonrpc": "2.0",
+                        "id": "get-asset-metadata",
+                        "method": "getAsset",
+                        "params": {
+                            "id": mint_address
+                        }
+                    }
+                    
+                    metadata_resp = requests.post(HELIUS_URL, headers={"Content-Type": "application/json"}, json=metadata_payload)
+                    if metadata_resp.status_code == 200:
+                        metadata_data = metadata_resp.json()
+                        if 'result' in metadata_data:
+                            result = metadata_data['result']
+                            content = result.get('content', {})
+                            metadata = content.get('metadata', {})
+                            
+                            if metadata.get('name'):
+                                token_name = metadata['name']
+                            if metadata.get('symbol'):
+                                token_symbol = metadata['symbol'].upper()
+                            
+                            # Get image from links
+                            links = content.get('links', {})
+                            if links.get('image'):
+                                token_image = links['image']
+                except Exception as metadata_error:
+                    pass
+                
+                # Try to get price from Jupiter first
+                try:
+                    jupiter_url = f"https://price.jup.ag/v4/price?ids={mint_address}"
+                    jupiter_resp = requests.get(jupiter_url, timeout=3)
+                    if jupiter_resp.status_code == 200:
+                        jupiter_data = jupiter_resp.json()
+                        if 'data' in jupiter_data and mint_address in jupiter_data['data']:
+                            price_usd = jupiter_data['data'][mint_address]['price']
+                except Exception:
+                    pass
+                
+                # If Jupiter fails, try DEXScreener
+                if price_usd == 0:
+                    try:
+                        dex_url = f"https://api.dexscreener.com/latest/dex/tokens/{mint_address}"
+                        dex_resp = requests.get(dex_url, timeout=3)
+                        if dex_resp.status_code == 200:
+                            dex_data = dex_resp.json()
+                            if 'pairs' in dex_data and len(dex_data['pairs']) > 0:
+                                # Get the pair with highest liquidity
+                                best_pair = max(dex_data['pairs'], key=lambda x: float(x.get('liquidity', {}).get('usd', 0)))
+                                price_usd = float(best_pair.get('priceUsd', 0))
+                    except Exception:
+                        pass
+
+                token_value_usd = token_balance * price_usd
+                total_portfolio_value_usd += token_value_usd
+
+                portfolio.append({
+                    "mint": mint_address,
+                    "name": token_name,
+                    "symbol": token_symbol,
+                    "amount": token_balance,
+                    "priceUsd": price_usd,
+                    "valueUsd": token_value_usd,
+                    "icon": token_image
+                })
+
+            except Exception:
                 continue
 
-            parsed_info = account.account.data.parsed['info']
-            mint_address = parsed_info['mint']
-            token_balance = float(parsed_info.get('tokenAmount', {}).get('uiAmount', 0))
-
-            if token_balance <= 0:
-                continue
-
-            token_info = get_coingecko_token_info(mint_address)
-            if not token_info:
-                continue
-
-            price_usd = token_info.get('market_data', {}).get('current_price', {}).get('usd', 0)
-            token_value_usd = token_balance * price_usd
-            total_portfolio_value_usd += token_value_usd
-
-            portfolio.append({
-                "mint": mint_address,
-                "name": token_info.get('name'),
-                "symbol": token_info.get('symbol', '').upper(),
-                "amount": token_balance,
-                "priceUsd": price_usd,
-                "valueUsd": token_value_usd,
-                "icon": token_info.get('image', {}).get('thumb')
-            })
+        # Sort tokens by USD value (highest first)
+        portfolio.sort(key=lambda x: x['valueUsd'], reverse=True)
 
         return jsonify({
             "success": True,
             "data": {
                 "wallet": wallet_address,
                 "totalValueUsd": total_portfolio_value_usd,
-                "solValueUsd": sol_balance * sol_price_usd,
+                "solValueUsd": sol_balance * sol_price_usd if 'sol_price_usd' in locals() else 0,
                 "tokens": portfolio
             }
         })

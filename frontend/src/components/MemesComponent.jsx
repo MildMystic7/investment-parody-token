@@ -136,6 +136,8 @@ const MemesComponent = () => {
                 <Link
                   to={`/council?tokenName=${encodeURIComponent(
                     coin.baseToken.name
+                  )}&tokenAddress=${encodeURIComponent(
+                    coin.baseToken.address
                   )}`}
                 >
                   <button className={styles.buyButton}>Vote</button>

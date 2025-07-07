@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import styles from "./ProposalForm.module.css";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "react-router-dom";
 
 const API_URL = "http://localhost:3001/api";
 
 function ProposalForm({ onProposalCreated }) {
   const { isAuthenticated } = useAuth();
+  const [searchParams] = useSearchParams();
 
   const [formData, setFormData] = useState({
     tokenAddress: "",
@@ -15,6 +17,22 @@ function ProposalForm({ onProposalCreated }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+
+  // Auto-fill form with token address from URL params
+  useEffect(() => {
+    const tokenAddress = searchParams.get("tokenAddress");
+    const tokenName = searchParams.get("tokenName");
+
+    if (tokenAddress) {
+      setFormData((prev) => ({
+        ...prev,
+        tokenAddress: tokenAddress,
+        description: tokenName
+          ? `I propose we ape into ${tokenName}. This token...`
+          : "",
+      }));
+    }
+  }, [searchParams]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -84,7 +102,14 @@ function ProposalForm({ onProposalCreated }) {
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.inputGroup}>
           <label htmlFor="tokenAddress" className={styles.label}>
-            Token Address
+            Token Address (Solana Mint)
+            {searchParams.get("tokenAddress") && (
+              <span className={styles.autoFilled}>
+                {" "}
+                - Auto-filled from{" "}
+                {searchParams.get("tokenName") || "selected token"}
+              </span>
+            )}
           </label>
           <input
             type="text"
