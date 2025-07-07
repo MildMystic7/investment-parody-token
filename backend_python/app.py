@@ -692,6 +692,110 @@ def get_active_vote_details():
         "details": details
     })
 
+# --- User Vote Statistics ---
+@app.route('/api/user/votes', methods=['GET'])
+def get_user_vote_stats():
+    """Get user's voting statistics and history"""
+    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    if not token:
+        return jsonify({"success": False, "error": "Authentication required"}), 401
+    
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+        user_id = payload.get('id')
+        if not user_id:
+            raise Exception('Invalid token')
+    except Exception as e:
+        return jsonify({"success": False, "error": "Invalid or expired token"}), 401
+
+    # Get all user votes
+    user_votes = VoteResponse.query.filter_by(user_id=user_id).all()
+    
+    # Get active vote to check what user voted for in current round
+    active_vote = Vote.query.filter_by(is_active=True).first()
+    active_user_votes = []
+    
+    if active_vote:
+        active_user_votes = VoteResponse.query.filter_by(
+            user_id=user_id, 
+            vote_id=active_vote.id
+        ).all()
+    
+    # Get token details for active votes to show readable names
+    HELIUS_API_KEY = os.getenv('HELIUS_API_KEY')
+    HELIUS_URL = f"https://mainnet.helius-rpc.com/?api-key={HELIUS_API_KEY}" if HELIUS_API_KEY else "https://mainnet.helius-rpc.com/"
+    
+    active_votes_with_names = []
+    for vote_response in active_user_votes:
+        try:
+            # Try to get token name
+            payload_req = {
+                "jsonrpc": "2.0",
+                "id": "get-token-metadata",
+                "method": "getAsset",
+                "params": {
+                    "id": vote_response.option
+                }
+            }
+            resp = requests.post(HELIUS_URL, headers={"Content-Type": "application/json"}, json=payload_req)
+            resp.raise_for_status()
+            result = resp.json().get('result', {})
+            
+            token_name = result.get('content', {}).get('metadata', {}).get('name')
+            token_symbol = result.get('content', {}).get('metadata', {}).get('symbol')
+            
+            display_name = token_name or token_symbol or vote_response.option[:8] + "..."
+            
+            active_votes_with_names.append({
+                'option': vote_response.option,
+                'name': display_name,
+                'vote_type': vote_response.vote_type,
+                'voted_at': vote_response.voted_at.isoformat()
+            })
+            time.sleep(0.02)  # Small delay to avoid rate limits
+        except Exception as e:
+            # Fallback to shortened address if token lookup fails
+            active_votes_with_names.append({
+                'option': vote_response.option,
+                'name': vote_response.option[:8] + "...",
+                'vote_type': vote_response.vote_type,
+                'voted_at': vote_response.voted_at.isoformat()
+            })
+    
+    # Calculate total votes
+    total_votes = len(user_votes)
+    
+    # Get user rank (simplified - based on total votes)
+    all_users_vote_counts = db.session.query(
+        VoteResponse.user_id, 
+        db.func.count(VoteResponse.id).label('vote_count')
+    ).group_by(VoteResponse.user_id).all()
+    
+    # Sort by vote count descending
+    sorted_users = sorted(all_users_vote_counts, key=lambda x: x.vote_count, reverse=True)
+    
+    user_rank = None
+    for i, (uid, count) in enumerate(sorted_users):
+        if uid == user_id:
+            user_rank = i + 1
+            break
+    
+    return jsonify({
+        "success": True,
+        "userVotes": {
+            "active": active_votes_with_names,
+            "total": total_votes,
+            "rank": user_rank or len(sorted_users) + 1,
+            "allTimeVotes": [
+                {
+                    'option': vote.option,
+                    'vote_type': vote.vote_type,
+                    'voted_at': vote.voted_at.isoformat(),
+                    'vote_id': vote.vote_id
+                } for vote in user_votes
+            ]
+        }
+    })
 
 # --- Email/Password Registration ---
 @app.route('/api/register', methods=['POST'])

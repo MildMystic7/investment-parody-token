@@ -86,6 +86,29 @@
   font-weight: 400;
 }
 
+.seeMoreButton {
+  background: transparent;
+  border: 1px solid #ffe8d6;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ff971d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  margin-top: 8px;
+}
+
+.seeMoreButton:hover {
+  background: #ffe8d6;
+  border-color: #ff971d;
+}
+
+.seeMoreButton:active {
+  transform: translateY(1px);
+}
+
 @media (max-width: 480px) {
   .card {
     padding: 16px;

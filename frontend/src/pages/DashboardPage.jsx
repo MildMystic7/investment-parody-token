@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import profilePicture from "../assets/Xpfp.jpg";
 import { ContainerScroll } from "../components/ui/container-scroll-animation";
 import bonk from "../assets/bonk.webp";
-import fartcoin from "../assets/fartcoin.webp";
 import MemesComponent from "../components/MemesComponent";
 import { Skeleton } from "../components/ui/skeleton";
 
@@ -15,7 +14,10 @@ function DashboardPage() {
   const [vaultBalance, setVaultBalance] = useState("Loading...");
   const [balanceError, setBalanceError] = useState(null);
   const [activeVote, setActiveVote] = useState(null);
+  const [voteDetails, setVoteDetails] = useState(null);
   const [timeLeft, setTimeLeft] = useState("");
+  const [userVoteStats, setUserVoteStats] = useState(null);
+  const [userStatsLoading, setUserStatsLoading] = useState(true);
 
   // Fetch vault balance from backend
   useEffect(() => {
@@ -57,6 +59,17 @@ function DashboardPage() {
           const data = await response.json();
           if (data.success) {
             setActiveVote(data);
+
+            // Also fetch vote details to get token names
+            const detailsResponse = await fetch(
+              "http://localhost:3001/api/vote/active/details"
+            );
+            if (detailsResponse.ok) {
+              const detailsData = await detailsResponse.json();
+              if (detailsData.success) {
+                setVoteDetails(detailsData);
+              }
+            }
           }
         }
       } catch (error) {
@@ -97,48 +110,128 @@ function DashboardPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Get top voted option
+  // Fetch user voting statistics
+  useEffect(() => {
+    const fetchUserVoteStats = async () => {
+      if (!user) {
+        setUserStatsLoading(false);
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          setUserStatsLoading(false);
+          return;
+        }
+
+        const response = await fetch("http://localhost:3001/api/user/votes", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setUserVoteStats(data.userVotes);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user vote stats:", error);
+      } finally {
+        setUserStatsLoading(false);
+      }
+    };
+
+    fetchUserVoteStats();
+  }, [user]);
+
+  // Get top voted option with readable name
   const getTopVoted = () => {
     if (!activeVote?.results) return { name: "No votes", votes: 0 };
     const entries = Object.entries(activeVote.results);
     if (entries.length === 0) return { name: "No votes", votes: 0 };
-    const topEntry = entries.reduce((a, b) => (a[1] > b[1] ? a : b));
-    return { name: topEntry[0], votes: topEntry[1] };
+
+    // Calculate total votes for each option (for + against)
+    const optionsWithTotalVotes = entries.map(([option, votes]) => ({
+      address: option,
+      totalVotes: (votes.for || 0) + (votes.against || 0),
+      forVotes: votes.for || 0,
+      againstVotes: votes.against || 0,
+    }));
+
+    // Find the option with most total votes
+    const topOption = optionsWithTotalVotes.reduce((a, b) =>
+      a.totalVotes > b.totalVotes ? a : b
+    );
+
+    // Get readable name from vote details
+    let readableName = topOption.address;
+    if (voteDetails?.details) {
+      const tokenDetail = voteDetails.details.find(
+        (detail) => detail.mint === topOption.address
+      );
+      if (tokenDetail?.name) {
+        readableName = tokenDetail.name;
+      } else if (tokenDetail?.symbol) {
+        readableName = tokenDetail.symbol;
+      }
+    }
+
+    // Truncate long names for display
+    const displayName =
+      readableName.length > 20
+        ? `${readableName.substring(0, 20)}...`
+        : readableName;
+
+    return {
+      name: displayName,
+      votes: topOption.totalVotes,
+      fullName: readableName,
+    };
   };
 
   const getTotalVotes = () => {
     if (!activeVote?.results) return 0;
     return Object.values(activeVote.results).reduce(
-      (sum, votes) => sum + votes,
+      (sum, votes) => sum + (votes.for || 0) + (votes.against || 0),
       0
     );
   };
 
+  const getProposalCount = () => {
+    if (!activeVote?.options) return 0;
+    return activeVote.options.length;
+  };
+
   const topVoted = getTopVoted();
   const totalVotes = getTotalVotes();
+  const proposalCount = getProposalCount();
 
   const statsData = [
     {
       title: "Vault Value",
       value: balanceError ? "Error" : vaultBalance,
-      trend: "+0.47%",
-      trendValue: "+0.47%",
-      trendColor: "green",
-      icon: "",
+      showSeeMore: true,
+      seeMoreText: "View Portfolio",
     },
     {
       title: "Active Votes",
-      value: totalVotes.toString(),
-      subtitle: "Community votes",
+      value: totalVotes,
       icon: "",
+      showSeeMore: proposalCount > 0,
+      seeMoreText: "See all proposals",
     },
     {
       title: "Top Voted",
       value: topVoted.name,
-      trend: topVoted.name,
-      trendValue: `${topVoted.votes} votes`,
+
+      trendValue: topVoted.fullName,
       trendColor: "green",
       icon: bonk,
+      showSeeMore: proposalCount > 0,
+      seeMoreText: "See all proposals",
     },
     {
       title: "Time Left to Vote",
@@ -146,7 +239,6 @@ function DashboardPage() {
       trend: "Voting deadline",
       trendValue: "2 days total",
       trendColor: "orange",
-      icon: fartcoin,
     },
   ];
 
@@ -177,11 +269,22 @@ function DashboardPage() {
                 trend={stat.trend}
                 trendValue={stat.trendValue}
                 trendColor={stat.trendColor}
+                showSeeMore={stat.showSeeMore}
+                seeMoreText={stat.seeMoreText}
               />
             ))}
           </div>
         </div>
       </ContainerScroll>
+
+      <div className="flex justify-center mb-8">
+        <a
+          href="/oakcoin"
+          className="px-8 py-4 bg-[#FF971D] text-white font-bold text-lg rounded-full hover:bg-[#e8851a] transition-colors shadow-lg"
+        >
+          Buy OakCoin
+        </a>
+      </div>
 
       {/* Features Section */}
       <div className={styles.container}>
@@ -588,27 +691,65 @@ function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
                 <h4 className="font-semibold text-lg">Active Votes</h4>
-                <p className="text-2xl font-bold text-black">2</p>
-                <div className="text-sm text-black mt-1">
-                  <span className="bg-[#FFE8D6] px-2 py-1 rounded mr-1">
-                    Bonk
-                  </span>
-                  <span className="bg-[#FFE8D6] px-2 py-1 rounded">
-                    Fartcoin
-                  </span>
-                </div>
+                {userStatsLoading ? (
+                  <div className="flex items-center justify-center">
+                    <Skeleton className="h-8 w-8 rounded-lg bg-gray-300" />
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-2xl font-bold text-black">
+                      {userVoteStats?.active?.length || 0}
+                    </p>
+                    <div className="text-sm text-black mt-1">
+                      {userVoteStats?.active?.length > 0 ? (
+                        userVoteStats.active.map((vote, index) => (
+                          <span
+                            key={index}
+                            className="bg-[#FFE8D6] px-2 py-1 rounded mr-1 mb-1 inline-block"
+                            title={`${vote.name} (${vote.vote_type})`}
+                          >
+                            {vote.name} (
+                            {vote.vote_type === "for" ? "👍" : "👎"})
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-500">No active votes</span>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
                 <h4 className="font-semibold text-lg">Total Votes</h4>
-                <p className="text-2xl font-bold text-black">12</p>
-                <p className="text-sm text-black">All time</p>
+                {userStatsLoading ? (
+                  <div className="flex items-center justify-center">
+                    <Skeleton className="h-8 w-12 rounded-lg bg-gray-300" />
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-2xl font-bold text-black">
+                      {userVoteStats?.total || 0}
+                    </p>
+                    <p className="text-sm text-black">All time</p>
+                  </>
+                )}
               </div>
 
               <div className="bg-[#F9F6F7] p-4 rounded-lg text-center">
                 <h4 className="font-semibold text-lg">Rank</h4>
-                <p className="text-2xl font-bold text-black">#47</p>
-                <p className="text-sm text-black">Community</p>
+                {userStatsLoading ? (
+                  <div className="flex items-center justify-center">
+                    <Skeleton className="h-8 w-12 rounded-lg bg-gray-300" />
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-2xl font-bold text-black">
+                      #{userVoteStats?.rank || "N/A"}
+                    </p>
+                    <p className="text-sm text-black">Community</p>
+                  </>
+                )}
               </div>
             </div>
           </div>

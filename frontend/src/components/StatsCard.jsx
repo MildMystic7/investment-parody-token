@@ -1,4 +1,5 @@
 import styles from "./StatsCard.module.css";
+import { useNavigate } from "react-router-dom";
 
 function StatsCard({
   title,
@@ -8,7 +9,17 @@ function StatsCard({
   trend,
   trendValue,
   trendColor = "green",
+  showSeeMore = false,
+  seeMoreText = "See more",
 }) {
+  const navigate = useNavigate();
+
+  const handleSeeMore = () => {
+    if (title === "Active Votes" || title === "Top Voted") {
+      navigate("/council");
+    }
+  };
+
   return (
     <div className={styles.card}>
       <div className={styles.header}>
@@ -29,6 +40,11 @@ function StatsCard({
             <span className={styles.trendValue}>{trendValue}</span>
             {trend && <span className={styles.trendText}>{trend}</span>}
           </div>
+        )}
+        {showSeeMore && (
+          <button className={styles.seeMoreButton} onClick={handleSeeMore}>
+            {seeMoreText} →
+          </button>
         )}
       </div>
     </div>
