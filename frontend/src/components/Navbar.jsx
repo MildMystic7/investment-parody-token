@@ -76,6 +76,14 @@ function Navbar({ className }) {
           >
             Twitter
           </a>
+          <a
+            href="https://t.me/OakmemeStratton"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity"
+          >
+            Telegram
+          </a>
         
           {isAuthenticated && user ? (
             <div className="relative">
@@ -192,14 +200,21 @@ function Navbar({ className }) {
               OakCoin
             </Link>
             <a
-              href="https://x.com/OakmemeStratton"
+              href="https://twitter.com"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#FF971D]"
             >
               Twitter
             </a>
-          
+            <a
+              href="https://telegram.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#FF971D]"
+            >
+              Telegram
+            </a>
             <hr className="w-full my-2 border-gray-200" />
             {isAuthenticated && user ? (
               <>

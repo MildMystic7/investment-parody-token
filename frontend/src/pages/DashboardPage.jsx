@@ -5,7 +5,6 @@ import { TextGenerateEffect } from "../components/ui/text-generate-effect";
 import { useState, useEffect } from "react";
 import profilePicture from "../assets/Xpfp.jpg";
 import { ContainerScroll } from "../components/ui/container-scroll-animation";
-import bonk from "../assets/bonk.webp";
 import MemesComponent from "../components/MemesComponent";
 import { Skeleton } from "../components/ui/skeleton";
 
@@ -147,11 +146,11 @@ function DashboardPage() {
     fetchUserVoteStats();
   }, [user]);
 
-  // Get top voted option with readable name
+  // Get top voted option with readable name and image
   const getTopVoted = () => {
-    if (!activeVote?.results) return { name: "No votes", votes: 0 };
+    if (!activeVote?.results) return { name: "No votes", votes: 0, image: "" };
     const entries = Object.entries(activeVote.results);
-    if (entries.length === 0) return { name: "No votes", votes: 0 };
+    if (entries.length === 0) return { name: "No votes", votes: 0, image: "" };
 
     // Calculate total votes for each option (for + against)
     const optionsWithTotalVotes = entries.map(([option, votes]) => ({
@@ -166,17 +165,29 @@ function DashboardPage() {
       a.totalVotes > b.totalVotes ? a : b
     );
 
-    // Get readable name from vote details
+    // Get readable name and image from vote details
     let readableName = topOption.address;
+    let tokenImage = "";
+
     if (voteDetails?.details) {
       const tokenDetail = voteDetails.details.find(
         (detail) => detail.mint === topOption.address
       );
-      if (tokenDetail?.name) {
-        readableName = tokenDetail.name;
-      } else if (tokenDetail?.symbol) {
-        readableName = tokenDetail.symbol;
+      if (tokenDetail) {
+        // Prioritize name over symbol, but use symbol as fallback
+        if (tokenDetail.name) {
+          readableName = tokenDetail.name;
+        } else if (tokenDetail.symbol) {
+          readableName = tokenDetail.symbol;
+        }
+        // Get the image URL
+        tokenImage = tokenDetail.image || "";
       }
+    }
+
+    // If we still have the raw address, show loading state
+    if (readableName === topOption.address && voteDetails === null) {
+      readableName = "Loading...";
     }
 
     // Truncate long names for display
@@ -189,6 +200,7 @@ function DashboardPage() {
       name: displayName,
       votes: topOption.totalVotes,
       fullName: readableName,
+      image: tokenImage,
     };
   };
 
@@ -226,10 +238,7 @@ function DashboardPage() {
     {
       title: "Top Voted",
       value: topVoted.name,
-
-      trendValue: topVoted.fullName,
-      trendColor: "green",
-      icon: bonk,
+      icon: topVoted.image,
       showSeeMore: proposalCount > 0,
       seeMoreText: "See all proposals",
     },

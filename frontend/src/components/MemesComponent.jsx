@@ -106,7 +106,7 @@ const MemesComponent = () => {
           return (
             <div key={coin.pairAddress || index} className={styles.tableRow}>
               <div className={styles.tableCell}>
-                <span className={styles.star}>☆</span>
+                
                 <span className={styles.rank}>{index + 1}</span>
               </div>
               <div className={styles.tableCell}>
