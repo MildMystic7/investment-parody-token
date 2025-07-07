@@ -24,11 +24,14 @@ CORS(app, supports_credentials=True)
 
 
 # --- Configuração da base de dados ---
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite'
+# For Vercel, use absolute path for SQLite or switch to a managed database
+database_path = os.path.join(os.path.dirname(__file__), 'instance', 'database.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{database_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SESSION_SECRET')
 db = SQLAlchemy(app)
-DEX_DATA_FILE = os.path.join("instance", "dex_data.json")
+# Vercel: Use absolute path relative to project root
+DEX_DATA_FILE = os.path.join(os.path.dirname(__file__), "instance", "dex_data.json")
 
 # --- Configuração externa ---
 SOLANA_RPC_URL = "https://api.mainnet-beta.solana.com"
@@ -898,12 +901,18 @@ def get_stats():
             }
         })
 
+# --- Initialize database for Vercel ---
+with app.app_context():
+    # Ensure instance directory exists
+    os.makedirs(os.path.dirname(database_path), exist_ok=True)
+    db.create_all()
+
 # --- Início da app ---
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     
-    # Start the background thread for fetching DexScreener data
+    # Start the background thread for fetching DexScreener data (local development only)
     dex_fetcher_thread = threading.Thread(target=update_dex_data_periodically, daemon=True)
     dex_fetcher_thread.start()
 
