@@ -24,7 +24,9 @@ function DashboardPage() {
   useEffect(() => {
     const fetchVaultBalance = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/vault/balance");
+        const response = await fetch(
+          "http://ec2-54-85-73-173.compute-1.amazonaws.com/api/vault/balance"
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -55,7 +57,9 @@ function DashboardPage() {
   useEffect(() => {
     const fetchActiveVote = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/vote/active");
+        const response = await fetch(
+          "http://ec2-54-85-73-173.compute-1.amazonaws.com/api/vote/active"
+        );
         if (response.ok) {
           const data = await response.json();
           if (data.success) {
@@ -63,7 +67,7 @@ function DashboardPage() {
 
             // Also fetch vote details to get token names
             const detailsResponse = await fetch(
-              "http://localhost:3001/api/vote/active/details"
+              "http://ec2-54-85-73-173.compute-1.amazonaws.com/api/vote/active/details"
             );
             if (detailsResponse.ok) {
               const detailsData = await detailsResponse.json();
@@ -126,11 +130,14 @@ function DashboardPage() {
           return;
         }
 
-        const response = await fetch("http://localhost:3001/api/user/votes", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "http://ec2-54-85-73-173.compute-1.amazonaws.com/api/user/votes",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -152,7 +159,9 @@ function DashboardPage() {
   useEffect(() => {
     const fetchImpressiveStats = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/stats");
+        const response = await fetch(
+          "http://ec2-54-85-73-173.compute-1.amazonaws.com/api/stats"
+        );
         if (response.ok) {
           const data = await response.json();
           if (data.success) {

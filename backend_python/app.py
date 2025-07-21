@@ -24,11 +24,28 @@ CORS(app, supports_credentials=True)
 
 
 # --- Configuração da base de dados ---
-# For Vercel, use absolute path for SQLite or switch to a managed database
-database_path = os.path.join(os.path.dirname(__file__), 'instance', 'database.sqlite')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{database_path}'
+# MySQL Configuration for production (AWS RDS)
+MYSQL_HOST = os.getenv('MYSQL_HOST', 'localhost')
+MYSQL_USER = os.getenv('MYSQL_USER', 'root')
+MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD', '')
+MYSQL_DATABASE = os.getenv('MYSQL_DATABASE', 'investment_parody_token')
+MYSQL_PORT = os.getenv('MYSQL_PORT', '3306')
+
+# Use MySQL in production, SQLite for local development
+if os.getenv('ENVIRONMENT') == 'production':
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}?charset=utf8mb4'
+else:
+    # For local development, use absolute path for SQLite
+    database_path = os.path.join(os.path.dirname(__file__), 'instance', 'database.sqlite')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{database_path}'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SESSION_SECRET')
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+    'connect_args': {"charset": "utf8mb4"} if os.getenv('ENVIRONMENT') == 'production' else {}
+}
 db = SQLAlchemy(app)
 # Vercel: Use absolute path relative to project root
 DEX_DATA_FILE = os.path.join(os.path.dirname(__file__), "instance", "dex_data.json")
@@ -65,7 +82,7 @@ class User(db.Model):
 class Vote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    options = db.Column(db.PickleType, nullable=False)
+    options = db.Column(db.JSON if os.getenv('ENVIRONMENT') == 'production' else db.PickleType, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=False)
 
@@ -853,6 +870,56 @@ def login():
     token = jwt.encode(payload, JWT_SECRET, algorithm='HS256')
     return jsonify({"success": True, "token": token, "user": user.to_dict()})
 
+# --- Twitter Timeline Endpoint ---
+@app.route('/api/tweets/<username>')
+def get_tweets(username):
+    """Fetches the latest tweets for a given Twitter username."""
+    bearer_token = os.getenv('TWITTER_BEARER_TOKEN')
+    if not bearer_token:
+        return jsonify({"success": False, "error": "Twitter Bearer Token not configured on server."}), 500
+
+    try:
+        # Using Twitter API v2 to get user ID from username
+        user_lookup_url = f"https://api.twitter.com/2/users/by/username/{username}"
+        headers = {"Authorization": f"Bearer {bearer_token}"}
+        user_response = requests.get(user_lookup_url, headers=headers)
+        user_response.raise_for_status()
+        user_data = user_response.json()
+
+        if 'data' not in user_data:
+            return jsonify({"success": False, "error": "Twitter user not found."}), 404
+
+        user_id = user_data['data']['id']
+
+        # Using user ID to get tweets
+        tweets_url = f"https://api.twitter.com/2/users/{user_id}/tweets"
+        params = {
+            "max_results": 5,
+            "tweet.fields": "created_at,public_metrics,entities"
+        }
+        tweets_response = requests.get(tweets_url, headers=headers, params=params)
+        tweets_response.raise_for_status()
+        tweets_data = tweets_response.json()
+
+        return jsonify({
+            "success": True,
+            "data": tweets_data.get('data', [])
+        })
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching tweets from Twitter API: {e}")
+        # Check for specific Twitter API error messages
+        try:
+            error_json = e.response.json()
+            error_detail = error_json.get('detail', str(e))
+            return jsonify({"success": False, "error": f"Twitter API error: {error_detail}"}), 500
+        except:
+            return jsonify({"success": False, "error": "Failed to connect to Twitter API."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"success": False, "error": "An internal server error occurred."}), 500
+
+
 # --- Stats Endpoint for Dashboard ---
 @app.route('/api/stats')
 def get_stats():
@@ -903,8 +970,10 @@ def get_stats():
 
 # --- Initialize database for Vercel ---
 with app.app_context():
-    # Ensure instance directory exists
-    os.makedirs(os.path.dirname(database_path), exist_ok=True)
+    # Ensure instance directory exists only for SQLite (development)
+    if os.getenv('ENVIRONMENT') != 'production':
+        database_path = os.path.join(os.path.dirname(__file__), 'instance', 'database.sqlite')
+        os.makedirs(os.path.dirname(database_path), exist_ok=True)
     db.create_all()
 
 # --- Início da app ---

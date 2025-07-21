@@ -4,7 +4,7 @@ import styles from "./ProposalForm.module.css";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "react-router-dom";
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = "http://ec2-54-85-73-173.compute-1.amazonaws.com/api";
 
 function ProposalForm({ onProposalCreated }) {
   const { isAuthenticated } = useAuth();

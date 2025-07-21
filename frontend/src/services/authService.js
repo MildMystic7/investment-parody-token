@@ -3,7 +3,7 @@
 
 class AuthService {
   constructor() {
-    this.baseURL = 'http://localhost:3001/api'; // Backend API URL
+    this.baseURL = 'http://ec2-54-85-73-173.compute-1.amazonaws.com/api'; // Backend API URL
   }
 
   // Development mode login (bypasses real auth)

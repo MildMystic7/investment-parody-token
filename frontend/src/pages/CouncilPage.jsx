@@ -18,11 +18,14 @@ function LoginModal({ onClose }) {
     setLoading(true);
     try {
       // Call backend login endpoint
-      const response = await fetch("http://localhost:3001/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "http://ec2-54-85-73-173.compute-1.amazonaws.com/api/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
       const data = await response.json();
       if (!data.success) throw new Error(data.error || "Login failed");
       localStorage.setItem("authToken", data.token);
@@ -77,7 +80,7 @@ function LoginModal({ onClose }) {
   );
 }
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = "http://ec2-54-85-73-173.compute-1.amazonaws.com/api";
 
 function CouncilPage() {
   const { isAuthenticated } = useAuth();

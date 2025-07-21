@@ -38,7 +38,9 @@ const MemesComponent = () => {
   useEffect(() => {
     const fetchTrendingCoins = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/dex/trending");
+        const response = await fetch(
+          "http://ec2-54-85-73-173.compute-1.amazonaws.com/api/dex/trending"
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -85,8 +87,7 @@ const MemesComponent = () => {
       <div className={styles.header}>
         <h2 className={styles.title}>Top Trending Meme Coins by Market Cap</h2>
         <p className={styles.subtitle}>
-          Showing {memecoinsData.length} trending tokens. Scroll
-          to see more!
+          Showing {memecoinsData.length} trending tokens. Scroll to see more!
         </p>
       </div>
       <div className={styles.tableContainer}>

@@ -11,7 +11,9 @@ function PortfolioPage() {
     const fetchPortfolio = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:3001/api/portfolio");
+        const response = await fetch(
+          "http://ec2-54-85-73-173.compute-1.amazonaws.com/api/portfolio"
+        );
         const data = await response.json();
 
         if (data.success) {
@@ -150,16 +152,13 @@ function PortfolioPage() {
                           ? `${token.amount.toFixed(4)} ${token.symbol}`
                           : "N/A"}
                       </p>
-                     
                     </div>
                   </div>
                   <div>
                     <p className="text-lg font-bold text-black">
                       {formatCurrency(token.valueUsd || 0)}
                     </p>
-                    <p className="text-sm text-black text-right">
-                      Total Value
-                    </p>
+                    <p className="text-sm text-black text-right">Total Value</p>
                   </div>
                 </div>
               ))

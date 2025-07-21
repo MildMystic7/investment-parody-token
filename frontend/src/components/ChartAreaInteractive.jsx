@@ -78,7 +78,9 @@ export function ChartAreaInteractive() {
     const fetchPortfolio = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:3001/api/portfolio");
+        const response = await fetch(
+          "http://ec2-54-85-73-173.compute-1.amazonaws.com/api/portfolio"
+        );
         const data = await response.json();
 
         if (data.success) {
@@ -163,7 +165,7 @@ export function ChartAreaInteractive() {
       </ResponsiveContainer>
       <div className="flex justify-center items-center mt-8">
         <div className="flex items-center gap-3">
-            <div className="w-4 h-4 rounded-full bg-[#FF971D]"></div>
+          <div className="w-4 h-4 rounded-full bg-[#FF971D]"></div>
           <span className="text-md text-black">Total Portfolio Value</span>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from "./ProposalCard.module.css";
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = 'http://ec2-54-85-73-173.compute-1.amazonaws.com/api';
 
 function ProposalCard({
   id,

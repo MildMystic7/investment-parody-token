@@ -14,7 +14,7 @@ function LoginModal({ onClose }) {
     setLoading(true);
     try {
       // Call backend login endpoint
-      const response = await fetch("http://localhost:3001/api/login", {
+      const response = await fetch("http://ec2-54-85-73-173.compute-1.amazonaws.com/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

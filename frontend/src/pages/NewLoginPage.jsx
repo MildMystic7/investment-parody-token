@@ -28,7 +28,7 @@ function NewLoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/api/login", {
+      const response = await fetch("http://ec2-54-85-73-173.compute-1.amazonaws.com/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -54,7 +54,7 @@ function NewLoginPage() {
     }
     setRegisterLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/api/register", {
+      const response = await fetch("http://ec2-54-85-73-173.compute-1.amazonaws.com/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
